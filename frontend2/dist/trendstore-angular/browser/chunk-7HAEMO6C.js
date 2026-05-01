@@ -1,0 +1,1 @@
+import{c as s,h as t}from"./chunk-5VLREADE.js";var a=class e{message=t("");visible=t(!1);timer=null;show(i){this.message.set(i),this.visible.set(!0),this.timer&&clearTimeout(this.timer),this.timer=setTimeout(()=>this.visible.set(!1),2800)}static \u0275fac=function(o){return new(o||e)};static \u0275prov=s({token:e,factory:e.\u0275fac,providedIn:"root"})};export{a};

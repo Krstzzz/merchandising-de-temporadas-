@@ -1,0 +1,14 @@
+<article class="product-card" [routerLink]="['/product', product.id]">
+  <div class="product-img">
+    {{ product.emoji }}
+    @if (product.badge) {
+      <div class="product-badge">{{ product.badge }}</div>
+    }
+  </div>
+  <div class="product-info">
+    <div class="product-cat">{{ product.cat }} · {{ product.type }}</div>
+    <div class="product-name">{{ product.name }}</div>
+    <div class="product-price">S/. {{ product.price }}</div>
+    <button class="add-btn" type="button" (click)="$event.stopPropagation(); quickAdd.emit(product)">+ Agregar</button>
+  </div>
+</article>

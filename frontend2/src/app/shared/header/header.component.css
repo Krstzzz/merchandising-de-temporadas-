@@ -1,0 +1,24 @@
+header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 24px; padding: 0 24px; height: 60px; }
+.logo { font-family: var(--display); font-size: 26px; color: var(--black); letter-spacing: 1px; cursor: pointer; text-decoration: none; }
+.logo span { color: var(--red); }
+nav { display: flex; gap: 2px; flex: 1; }
+.nav-item { position: relative; padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-radius: 6px; transition: all 0.15s; white-space: nowrap; }
+.nav-item:hover { color: var(--black); background: var(--gray-100); }
+.mega-menu { position: absolute; top: calc(100% + 8px); left: 0; background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 20px 24px; display: none; min-width: 320px; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); z-index: 200; }
+.nav-item:hover .mega-menu { display: flex; }
+.mega-col h4 { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+.mega-col a { display: block; font-size: 13px; color: var(--black); padding: 5px 0; cursor: pointer; transition: color 0.1s; text-decoration: none; }
+.mega-col a:hover { color: var(--red); }
+.search-bar { display: flex; align-items: center; gap: 8px; background: var(--gray-100); border-radius: 8px; padding: 7px 14px; min-width: 180px; }
+.search-bar input { background: none; border: none; outline: none; font-size: 13px; color: var(--text); width: 120px; }
+.header-actions { display: flex; align-items: center; gap: 8px; }
+.icon-btn { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; position: relative; border: none; background: none; color: var(--text); font-size: 16px; text-decoration: none; }
+.icon-btn:hover { background: var(--gray-100); }
+.cart-badge { position: absolute; top: 2px; right: 2px; background: var(--red); color: white; font-size: 10px; font-weight: 600; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; }
+.cart-badge.show { display: flex; }
+@media (max-width: 768px) {
+  nav { display: none; }
+  .search-bar { display: none; }
+  .header-inner { padding: 0 16px; }
+}

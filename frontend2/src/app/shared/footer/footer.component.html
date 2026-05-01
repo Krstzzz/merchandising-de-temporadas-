@@ -1,0 +1,33 @@
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="logo" routerLink="/">Trend<span>Store</span></a>
+      <p>Merch de calidad inspirado en tus fandoms favoritos. Anime, gaming, cine y música en un solo lugar.</p>
+      <div class="social-links">
+        <div class="social-link">ig</div>
+        <div class="social-link">tw</div>
+        <div class="social-link">fb</div>
+        <div class="social-link">yt</div>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Categorías</h4>
+      <a routerLink="/catalog" [queryParams]="{ q: 'Anime' }">Animes</a>
+      <a routerLink="/catalog" [queryParams]="{ q: 'Videojuegos' }">Videojuegos</a>
+      <a routerLink="/catalog" [queryParams]="{ q: 'Películas' }">Películas</a>
+      <a routerLink="/catalog" [queryParams]="{ q: 'Música' }">Música</a>
+    </div>
+    <div class="footer-col">
+      <h4>Ayuda</h4>
+      <a>Preguntas frecuentes</a><a>Envíos</a><a>Devoluciones</a><a>Tallas</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <a>hola@trendstore.pe</a><a>WhatsApp</a><a>Instagram</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 TrendStore - Todos los derechos reservados</span>
+    <span>Hecho en Perú</span>
+  </div>
+</footer>

@@ -1,0 +1,17 @@
+<section class="confirm-screen">
+  <div class="confirm-icon">✓</div>
+  <div class="order-id">Pedido #TS-2025-0847</div>
+  <h2>¡Pedido registrado!</h2>
+  <p>Tu pedido ha sido recibido con éxito. Recibirás una confirmación en tu correo electrónico.</p>
+  <div class="confirm-order">
+    @for (item of cart.items(); track $index) {
+      <div class="confirm-row"><span>{{ item.name }} (×{{ item.qty }}, T:{{ item.size }})</span><span>S/. {{ item.price * item.qty }}</span></div>
+    }
+    <div class="confirm-row"><span>Envío</span><span>{{ cart.shipping() === 0 ? 'Gratis' : 'S/. 10' }}</span></div>
+    <div class="confirm-row"><span>Total pagado</span><span>S/. {{ cart.total() }}</span></div>
+  </div>
+  <div class="confirm-actions">
+    <a class="btn-primary" routerLink="/" (click)="cart.clear()">Volver al inicio</a>
+    <a class="btn-outline" routerLink="/catalog">Seguir comprando</a>
+  </div>
+</section>

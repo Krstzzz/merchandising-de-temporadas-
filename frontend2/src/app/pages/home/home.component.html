@@ -1,0 +1,42 @@
+<section class="banner">
+  <div class="banner-tag">Nueva temporada 2025</div>
+  <h1>Tu estilo cambia <span>cada día.</span> ¿Cuál eliges hoy?</h1>
+  <p>Merch exclusivo de anime, videojuegos, películas, series y música. Exprésate con lo que amas.</p>
+  <div class="banner-actions">
+    <a class="btn-primary" routerLink="/catalog">Explorar catálogo ↗</a>
+    <a class="btn-outline inverted" routerLink="/catalog">Ver novedades</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">Explora por categoría</div>
+  <div class="category-grid">
+    <a class="cat-card" routerLink="/catalog" [queryParams]="{ q: 'Anime' }">
+      <div class="cat-bg cat-anime">🎌</div>
+      <div class="cat-overlay"><div class="cat-name">Animes</div><div class="cat-count">42 productos</div></div>
+    </a>
+    <a class="cat-card" routerLink="/catalog" [queryParams]="{ q: 'Videojuegos' }">
+      <div class="cat-bg cat-games">🎮</div>
+      <div class="cat-overlay"><div class="cat-name">Videojuegos</div><div class="cat-count">38 productos</div></div>
+    </a>
+    <a class="cat-card" routerLink="/catalog" [queryParams]="{ q: 'Películas' }">
+      <div class="cat-bg cat-movies">🎬</div>
+      <div class="cat-overlay"><div class="cat-name">Películas</div><div class="cat-count">29 productos</div></div>
+    </a>
+    <a class="cat-card" routerLink="/catalog" [queryParams]="{ q: 'Música' }">
+      <div class="cat-bg cat-music">🎵</div>
+      <div class="cat-overlay"><div class="cat-name">Música</div><div class="cat-count">24 productos</div></div>
+    </a>
+  </div>
+</section>
+
+<section class="section recent">
+  <div class="section-title">Productos recientes</div>
+  <div class="product-grid">
+    @for (product of recent; track product.id) {
+      <app-product-card [product]="product" (quickAdd)="add($event)" />
+    }
+  </div>
+</section>
+
+<app-footer />
