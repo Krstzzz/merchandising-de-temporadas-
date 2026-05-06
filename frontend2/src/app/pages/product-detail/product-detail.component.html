@@ -1,43 +1,44 @@
 @if (product(); as product) {
-  <div class="breadcrumb">
-    <a routerLink="/">Inicio</a>
-    <span class="sep">›</span>
-    <a routerLink="/catalog">Catálogo</a>
-    <span class="sep">›</span>
-    <span class="current">{{ product.name }}</span>
-  </div>
-  <section class="detail-grid">
-    <div class="detail-img">{{ product.emoji }}</div>
-    <div class="detail-info">
-      <div class="detail-cat">{{ product.cat }} - {{ product.sub }}</div>
-      <h1 class="detail-name">{{ product.name }}</h1>
-      <div class="detail-price">S/. {{ product.price }}</div>
-      <div class="stock-badge">✓ {{ product.stock }} disponibles</div>
-      <p class="detail-desc">{{ product.desc }}</p>
+<div class="breadcrumb">
+  <a routerLink="/">Inicio</a>
+  <span class="sep">›</span>
+  <a routerLink="/catalog">Catálogo</a>
+  <span class="sep">›</span>
+  <span class="current">{{ product.name }}</span>
+</div>
+<section class="detail-grid">
+  <div class="detail-img">{{ product.emoji }}</div>
+  <div class="detail-info">
+    <div class="detail-cat">{{ product.cat }} - {{ product.sub }}</div>
+    <h1 class="detail-name">{{ product.name }}</h1>
+    <div class="detail-price">S/. {{ product.price }}</div>
+    <div class="stock-badge">✓ {{ product.stock }} disponibles</div>
+    <p class="detail-desc">{{ product.desc }}</p>
 
-      <div class="variant-label">Talla</div>
-      <div class="size-grid">
-        @for (item of sizes; track item) {
-          <button class="size-btn" [class.active]="size() === item" (click)="size.set(item)">{{ item }}</button>
-        }
-      </div>
-
-      <div class="variant-label">Color</div>
-      <div class="color-grid">
-        @for (item of product.colors; track item; let i = $index) {
-          <button class="color-swatch" [class.active]="color() === item" [style.background]="item" [title]="labels[i] || item" (click)="color.set(item)"></button>
-        }
-      </div>
-
-      <div class="variant-label">Cantidad</div>
-      <div class="qty-selector">
-        <button class="qty-btn" (click)="changeQty(-1)">−</button>
-        <div class="qty-val">{{ qty() }}</div>
-        <button class="qty-btn" (click)="changeQty(1)">+</button>
-      </div>
-
-      <button class="btn-red" (click)="add()">Agregar al carrito</button>
-      <a class="btn-outline cart-link" routerLink="/cart">Ver carrito →</a>
+    <div class="variant-label">Talla</div>
+    <div class="size-grid">
+      @for (item of sizes; track item) {
+      <button class="size-btn" [class.active]="size() === item" (click)="size.set(item)">{{ item }}</button>
+      }
     </div>
-  </section>
+
+    <div class="variant-label">Color</div>
+    <div class="color-grid">
+      @for (item of product.colors; track item; let i = $index) {
+      <button class="color-swatch" [class.active]="color() === item" [style.background]="item"
+        [title]="labels[i] || item" (click)="color.set(item)"></button>
+      }
+    </div>
+
+    <div class="variant-label">Cantidad</div>
+    <div class="qty-selector">
+      <button class="qty-btn" (click)="changeQty(-1)">−</button>
+      <div class="qty-val">{{ qty() }}</div>
+      <button class="qty-btn" (click)="changeQty(1)">+</button>
+    </div>
+
+    <button class="btn-red" (click)="add()">Agregar al carrito</button>
+    <a class="btn-outline cart-link" routerLink="/cart">Ver carrito →</a>
+  </div>
+</section>
 }

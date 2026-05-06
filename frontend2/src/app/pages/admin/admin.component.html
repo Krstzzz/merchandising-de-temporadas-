@@ -2,85 +2,246 @@
   <aside class="admin-sidebar">
     <a class="logo" routerLink="/">Trend<span>Store</span></a>
     <div class="sidebar-nav">
-      <button class="sidebar-item" [class.active]="tab() === 'dashboard'" (click)="tab.set('dashboard')"><span class="sidebar-icon">📊</span><span>Dashboard</span></button>
-      <button class="sidebar-item" [class.active]="tab() === 'products'" (click)="tab.set('products')"><span class="sidebar-icon">👕</span><span>Productos</span></button>
-      <button class="sidebar-item" [class.active]="tab() === 'orders'" (click)="tab.set('orders')"><span class="sidebar-icon">📦</span><span>Pedidos</span></button>
-      <button class="sidebar-item" [class.active]="tab() === 'users'" (click)="tab.set('users')"><span class="sidebar-icon">👥</span><span>Usuarios</span></button>
+      <button class="sidebar-item" [class.active]="tab() === 'dashboard'" (click)="tab.set('dashboard')"><span
+          class="sidebar-icon">📊</span><span>Dashboard</span></button>
+      <button class="sidebar-item" [class.active]="tab() === 'products'" (click)="tab.set('products')"><span
+          class="sidebar-icon">👕</span><span>Productos</span></button>
+      <button class="sidebar-item" [class.active]="tab() === 'orders'" (click)="tab.set('orders')"><span
+          class="sidebar-icon">📦</span><span>Pedidos</span></button>
+      <button class="sidebar-item" [class.active]="tab() === 'users'" (click)="tab.set('users')"><span
+          class="sidebar-icon">👥</span><span>Usuarios</span></button>
       <a class="sidebar-item exit" routerLink="/"><span class="sidebar-icon">🚪</span><span>Salir</span></a>
     </div>
   </aside>
 
   <main class="admin-content">
     @if (tab() === 'dashboard') {
-      <div class="admin-header"><div class="admin-title">Dashboard</div><div class="date">Lunes, 28 Abril 2025</div></div>
-      <div class="stat-grid">
-        <div class="stat-card"><div class="stat-label">Ventas totales</div><div class="stat-value">S/.12,840</div><div class="stat-change">↑ +18% este mes</div></div>
-        <div class="stat-card"><div class="stat-label">Pedidos nuevos</div><div class="stat-value">47</div><div class="stat-change">↑ +6 hoy</div></div>
-        <div class="stat-card"><div class="stat-label">Productos activos</div><div class="stat-value">133</div><div class="stat-change">↑ +5 esta semana</div></div>
-        <div class="stat-card"><div class="stat-label">Usuarios registrados</div><div class="stat-value">891</div><div class="stat-change">↑ +24 nuevos</div></div>
+    <div class="admin-header">
+      <div class="admin-title">Dashboard</div>
+      <div class="date">Lunes, 28 Abril 2025</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Ventas totales</div>
+        <div class="stat-value">S/.12,840</div>
+        <div class="stat-change">↑ +18% este mes</div>
       </div>
-      <div class="data-table">
-        <div class="table-header"><h3>Últimos pedidos</h3><button class="btn-outline small" (click)="tab.set('orders')">Ver todos →</button></div>
-        <table>
-          <thead><tr><th>ID</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Estado</th><th>Fecha</th></tr></thead>
-          <tbody>
-            <tr><td>#847</td><td>Ana Torres</td><td>Polo Naruto × 2</td><td>S/.90</td><td><span class="badge badge-green">Entregado</span></td><td>28 Abr</td></tr>
-            <tr><td>#846</td><td>Carlos Ríos</td><td>Hoodie Dragon Ball</td><td>S/.85</td><td><span class="badge badge-orange">En camino</span></td><td>28 Abr</td></tr>
-            <tr><td>#845</td><td>Lucía Mamani</td><td>Polo Valorant × 3</td><td>S/.135</td><td><span class="badge badge-blue">Procesando</span></td><td>27 Abr</td></tr>
-          </tbody>
-        </table>
+      <div class="stat-card">
+        <div class="stat-label">Pedidos nuevos</div>
+        <div class="stat-value">47</div>
+        <div class="stat-change">↑ +6 hoy</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-label">Productos activos</div>
+        <div class="stat-value">133</div>
+        <div class="stat-change">↑ +5 esta semana</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Usuarios registrados</div>
+        <div class="stat-value">891</div>
+        <div class="stat-change">↑ +24 nuevos</div>
+      </div>
+    </div>
+    <div class="data-table">
+      <div class="table-header">
+        <h3>Últimos pedidos</h3><button class="btn-outline small" (click)="tab.set('orders')">Ver todos →</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Productos</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#847</td>
+            <td>Ana Torres</td>
+            <td>Polo Naruto × 2</td>
+            <td>S/.90</td>
+            <td><span class="badge badge-green">Entregado</span></td>
+            <td>28 Abr</td>
+          </tr>
+          <tr>
+            <td>#846</td>
+            <td>Carlos Ríos</td>
+            <td>Hoodie Dragon Ball</td>
+            <td>S/.85</td>
+            <td><span class="badge badge-orange">En camino</span></td>
+            <td>28 Abr</td>
+          </tr>
+          <tr>
+            <td>#845</td>
+            <td>Lucía Mamani</td>
+            <td>Polo Valorant × 3</td>
+            <td>S/.135</td>
+            <td><span class="badge badge-blue">Procesando</span></td>
+            <td>27 Abr</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     }
 
     @if (tab() === 'products') {
-      <div class="admin-header"><div class="admin-title">Productos</div><button class="btn-primary" (click)="notify('Formulario nuevo producto abierto')">+ Nuevo producto</button></div>
-      <div class="data-table">
-        <div class="table-header"><h3>Gestión de productos</h3><span>133 productos</span></div>
-        <table>
-          <thead><tr><th>Img</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody>
-            @for (product of products; track product.id) {
-              <tr>
-                <td><div class="td-img">{{ product.emoji }}</div></td>
-                <td class="strong">{{ product.name }}</td>
-                <td>{{ product.cat }}</td>
-                <td>S/. {{ product.price }}</td>
-                <td>{{ product.stock }}</td>
-                <td><span class="badge" [class.badge-green]="product.stock > 15" [class.badge-orange]="product.stock <= 15 && product.stock > 5" [class.badge-red]="product.stock <= 5">{{ product.stock > 15 ? 'Disponible' : product.stock > 5 ? 'Pocas unidades' : 'Agotándose' }}</span></td>
-                <td class="action-btns"><button class="act-btn act-edit">Editar</button><button class="act-btn act-del">Eliminar</button></td>
-              </tr>
-            }
-          </tbody>
-        </table>
+    <div class="admin-header">
+      <div class="admin-title">Productos</div><button class="btn-primary"
+        (click)="notify('Formulario nuevo producto abierto')">+ Nuevo producto</button>
+    </div>
+    <div class="data-table">
+      <div class="table-header">
+        <h3>Gestión de productos</h3><span>133 productos</span>
       </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Img</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products; track product.id) {
+          <tr>
+            <td>
+              <div class="td-img">{{ product.emoji }}</div>
+            </td>
+            <td class="strong">{{ product.name }}</td>
+            <td>{{ product.cat }}</td>
+            <td>S/. {{ product.price }}</td>
+            <td>{{ product.stock }}</td>
+            <td><span class="badge" [class.badge-green]="product.stock > 15"
+                [class.badge-orange]="product.stock <= 15 && product.stock > 5"
+                [class.badge-red]="product.stock <= 5">{{ product.stock > 15 ? 'Disponible' : product.stock > 5 ? 'Pocas
+                unidades' : 'Agotándose' }}</span></td>
+            <td class="action-btns"><button class="act-btn act-edit">Editar</button><button
+                class="act-btn act-del">Eliminar</button></td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
     }
 
     @if (tab() === 'orders') {
-      <div class="admin-header"><div class="admin-title">Pedidos</div><div class="filter-row"><button class="filter-btn active">Todos (47)</button><button class="filter-btn">Pendientes</button><button class="filter-btn">En camino</button></div></div>
-      <div class="data-table">
-        <table>
-          <thead><tr><th>ID</th><th>Cliente</th><th>Email</th><th>Productos</th><th>Total</th><th>Pago</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody>
-            <tr><td>#847</td><td>Ana Torres</td><td>ana@mail.com</td><td>Polo Naruto × 2</td><td>S/.90</td><td>Tarjeta</td><td><span class="badge badge-green">Entregado</span></td><td class="action-btns"><button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button></td></tr>
-            <tr><td>#846</td><td>Carlos Ríos</td><td>carlos@mail.com</td><td>Hoodie Dragon Ball</td><td>S/.85</td><td>Contacto</td><td><span class="badge badge-orange">En camino</span></td><td class="action-btns"><button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button></td></tr>
-            <tr><td>#845</td><td>Lucía Mamani</td><td>lucia@mail.com</td><td>Polo Valorant × 3</td><td>S/.135</td><td>Tarjeta</td><td><span class="badge badge-blue">Procesando</span></td><td class="action-btns"><button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button></td></tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="admin-header">
+      <div class="admin-title">Pedidos</div>
+      <div class="filter-row"><button class="filter-btn active">Todos (47)</button><button
+          class="filter-btn">Pendientes</button><button class="filter-btn">En camino</button></div>
+    </div>
+    <div class="data-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Email</th>
+            <th>Productos</th>
+            <th>Total</th>
+            <th>Pago</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#847</td>
+            <td>Ana Torres</td>
+            <td>ana@mail.com</td>
+            <td>Polo Naruto × 2</td>
+            <td>S/.90</td>
+            <td>Tarjeta</td>
+            <td><span class="badge badge-green">Entregado</span></td>
+            <td class="action-btns"><button class="act-btn act-edit">Ver</button><button
+                class="act-btn act-edit">Editar</button></td>
+          </tr>
+          <tr>
+            <td>#846</td>
+            <td>Carlos Ríos</td>
+            <td>carlos@mail.com</td>
+            <td>Hoodie Dragon Ball</td>
+            <td>S/.85</td>
+            <td>Contacto</td>
+            <td><span class="badge badge-orange">En camino</span></td>
+            <td class="action-btns"><button class="act-btn act-edit">Ver</button><button
+                class="act-btn act-edit">Editar</button></td>
+          </tr>
+          <tr>
+            <td>#845</td>
+            <td>Lucía Mamani</td>
+            <td>lucia@mail.com</td>
+            <td>Polo Valorant × 3</td>
+            <td>S/.135</td>
+            <td>Tarjeta</td>
+            <td><span class="badge badge-blue">Procesando</span></td>
+            <td class="action-btns"><button class="act-btn act-edit">Ver</button><button
+                class="act-btn act-edit">Editar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     }
 
     @if (tab() === 'users') {
-      <div class="admin-header"><div class="admin-title">Usuarios</div><button class="btn-primary" (click)="notify('Nuevo usuario creado')">+ Nuevo usuario</button></div>
-      <div class="data-table">
-        <table>
-          <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Pedidos</th><th>Registro</th><th>Acciones</th></tr></thead>
-          <tbody>
-            <tr><td>#01</td><td>Ana Torres</td><td>ana@mail.com</td><td><span class="badge badge-blue">Admin</span></td><td>12</td><td>Ene 2025</td><td class="action-btns"><button class="act-btn act-edit">Editar</button><button class="act-btn act-del">Eliminar</button></td></tr>
-            <tr><td>#02</td><td>Carlos Ríos</td><td>carlos@mail.com</td><td><span class="badge badge-green">Cliente</span></td><td>5</td><td>Feb 2025</td><td class="action-btns"><button class="act-btn act-edit">Editar</button><button class="act-btn act-del">Eliminar</button></td></tr>
-            <tr><td>#03</td><td>Lucía Mamani</td><td>lucia@mail.com</td><td><span class="badge badge-green">Cliente</span></td><td>8</td><td>Mar 2025</td><td class="action-btns"><button class="act-btn act-edit">Editar</button><button class="act-btn act-del">Eliminar</button></td></tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="admin-header">
+      <div class="admin-title">Usuarios</div><button class="btn-primary" (click)="notify('Nuevo usuario creado')">+
+        Nuevo usuario</button>
+    </div>
+    <div class="data-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Pedidos</th>
+            <th>Registro</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#01</td>
+            <td>Ana Torres</td>
+            <td>ana@mail.com</td>
+            <td><span class="badge badge-blue">Admin</span></td>
+            <td>12</td>
+            <td>Ene 2025</td>
+            <td class="action-btns"><button class="act-btn act-edit">Editar</button><button
+                class="act-btn act-del">Eliminar</button></td>
+          </tr>
+          <tr>
+            <td>#02</td>
+            <td>Carlos Ríos</td>
+            <td>carlos@mail.com</td>
+            <td><span class="badge badge-green">Cliente</span></td>
+            <td>5</td>
+            <td>Feb 2025</td>
+            <td class="action-btns"><button class="act-btn act-edit">Editar</button><button
+                class="act-btn act-del">Eliminar</button></td>
+          </tr>
+          <tr>
+            <td>#03</td>
+            <td>Lucía Mamani</td>
+            <td>lucia@mail.com</td>
+            <td><span class="badge badge-green">Cliente</span></td>
+            <td>8</td>
+            <td>Mar 2025</td>
+            <td class="action-btns"><button class="act-btn act-edit">Editar</button><button
+                class="act-btn act-del">Eliminar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     }
   </main>
 </section>

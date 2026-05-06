@@ -5,16 +5,17 @@
 
 <div class="filters">
   @for (filter of filters; track filter) {
-    <button class="filter-btn" [class.active]="activeFilter() === filter" (click)="setFilter(filter)">{{ filter }}</button>
+  <button class="filter-btn" [class.active]="activeFilter() === filter" (click)="setFilter(filter)">{{ filter
+    }}</button>
   }
 </div>
 
 <section class="section catalog-list">
   <div class="product-grid">
     @for (product of products(); track product.id) {
-      <app-product-card [product]="product" (quickAdd)="add($event)" />
+    <app-product-card [product]="product" (quickAdd)="add($event)" />
     } @empty {
-      <p class="empty">No encontramos productos para este filtro.</p>
+    <p class="empty">No encontramos productos para este filtro.</p>
     }
   </div>
 </section>
