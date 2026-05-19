@@ -1,6 +1,6 @@
 import {
   PlatformLocation
-} from "./chunk-U5YP3OGH.js";
+} from "./chunk-G4CIMVGA.js";
 import {
   ApplicationRef,
   Attribute,
@@ -31,7 +31,6 @@ import {
   Renderer2,
   RendererStyleFlags2,
   RuntimeError,
-  Subject,
   TemplateRef,
   Version,
   ViewContainerRef,
@@ -61,7 +60,10 @@ import {
   ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-} from "./chunk-UUBM6OTF.js";
+} from "./chunk-E5OTQOBG.js";
+import {
+  Subject
+} from "./chunk-YBNECNG7.js";
 import {
   __async,
   __spreadProps,
@@ -4494,4 +4496,4 @@ export {
   PLATFORM_BROWSER_ID,
   ViewportScroller
 };
-//# sourceMappingURL=chunk-OXA6D6YG.js.map
+//# sourceMappingURL=chunk-2Q66URFO.js.map

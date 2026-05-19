@@ -20,7 +20,7 @@ export interface BackendProduct {
   descripcion: string;
   precio: number;
   stock: number;
-  estado: 'DISPONIBLE' | 'POCAS_UNIDADES' | 'NO_DISPONIBLE';
+  estado: "DISPONIBLE" | "POCAS_UNIDADES" | "NO_DISPONIBLE";
   subcategoria: string;
   imagenUrl: string | null;
   categoria: BackendCategoria;
@@ -70,36 +70,37 @@ export function mapBackendProduct(product: BackendProduct): Product {
   return {
     id: product.id,
     name: product.nombre,
-    cat: product.categoria?.nombre ?? 'Sin categoría',
+    cat: product.categoria?.nombre ?? "Sin categoría",
     sub: product.subcategoria,
     type: inferType(product.nombre),
     price: Number(product.precio),
     emoji: inferEmoji(product.categoria?.nombre),
-    badge: product.estado === 'POCAS_UNIDADES' ? 'Pocas unidades' : null,
+    badge: product.estado === "POCAS_UNIDADES" ? "Pocas unidades" : null,
     colors: product.colores?.map((item) => item.color) ?? [],
     sizes: product.tallas?.map((item) => item.talla) ?? [],
     desc: product.descripcion,
     stock: product.stock,
     imageUrl: product.imagenUrl,
     estado: product.estado,
-    categoriaId: product.categoria?.id
+    categoriaId: product.categoria?.id,
   };
 }
 
 function inferType(nombre: string): string {
-  return nombre.toLowerCase().includes('hoodie') ? 'Hoodie' : 'Polo';
+  return nombre.toLowerCase().includes("hoodie") ? "Hoodie" : "Polo";
 }
 
 function inferEmoji(categoria?: string): string {
-  if (!categoria) return '👕';
+  if (!categoria) return "👕";
   const normalized = categoria.toLowerCase();
 
-  if (normalized.includes('anime')) return '🎌';
-  if (normalized.includes('videojuego')) return '🎮';
-  if (normalized.includes('película') || normalized.includes('serie')) return '🎬';
-  if (normalized.includes('música')) return '🎵';
+  if (normalized.includes("anime")) return "🎌";
+  if (normalized.includes("videojuego")) return "🎮";
+  if (normalized.includes("película") || normalized.includes("serie"))
+    return "🎬";
+  if (normalized.includes("música")) return "🎵";
 
-  return '👕';
+  return "👕";
 }
 
 export interface BackendSubcategoria {
@@ -137,4 +138,46 @@ export interface BackendProductoImagen {
   colorHex: string | null;
   principal: boolean;
   orden: number;
+}
+
+export interface BackendSubcategoria {
+  id: number;
+  nombre: string;
+  categoria: BackendCategoria;
+}
+
+export interface CreateSubcategoriaRequest {
+  nombre: string;
+  categoriaId: number;
+}
+
+export interface BackendProductoVariante {
+  id: number;
+  colorHex: string;
+  talla: string;
+  stock: number;
+  precio: number | null;
+  sku: string | null;
+}
+
+export interface CreateProductoVarianteRequest {
+  productoId: number;
+  colorHex: string;
+  talla: string;
+  stock: number;
+  precio: number | null;
+  sku: string | null;
+}
+
+export interface BackendProductoImagen {
+  id: number;
+  imagenUrl: string;
+  colorHex: string | null;
+  principal: boolean;
+  orden: number;
+}
+
+export interface CreateCategoriaRequest {
+  nombre: string;
+  descripcion: string;
 }

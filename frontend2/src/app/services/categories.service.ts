@@ -5,6 +5,7 @@ import {
   BackendSubcategoria,
   CreateSubcategoriaRequest
 } from '../models/product.model';
+import * as productModel from '../models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class CategoriesService {
@@ -42,4 +43,19 @@ export class CategoriesService {
       error: (error) => console.error('Error creando subcategoría', error)
     });
   }
+
+  createCategory(request: productModel.CreateCategoriaRequest): void {
+  this.http.post<BackendCategoria>(this.categoriasUrl, request).subscribe({
+    next: (category) => {
+      this.categories.update((items) => [...items, category]);
+    },
+    error: (error) => console.error('Error creando categoría', error)
+  });
+}
+
+}
+
+export interface CreateCategoriaRequest {
+  nombre: string;
+  descripcion: string;
 }

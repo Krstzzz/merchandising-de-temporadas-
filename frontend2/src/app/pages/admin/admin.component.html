@@ -96,64 +96,137 @@
 
     @if (tab() === "products") {
     <div class="admin-header">
-      <div class="admin-title">Productos</div><button class="btn-primary" (click)="openProductForm()">+ Nuevo
-        producto</button>
+      <div class="admin-title">Productos</div>
+      <button class="btn-primary" (click)="openProductForm()">
+        + Nuevo producto
+      </button>
     </div>
 
     @if (showProductForm()) {
     <form class="product-form" (ngSubmit)="saveProduct()">
       <div class="form-header">
         <h3>Nuevo producto</h3>
-        <button type="button" class="act-btn act-del" (click)="closeProductForm()">Cerrar</button>
+        <button type="button" class="act-btn act-del" (click)="closeProductForm()">
+          Cerrar
+        </button>
       </div>
 
       <div class="form-grid">
         <label>
           Nombre
-          <input name="nombre" [(ngModel)]="productForm.nombre" placeholder="Polo Naruto Hokage" required>
+          <input name="nombre" [(ngModel)]="productForm.nombre" placeholder="Polo Naruto Hokage" required />
         </label>
 
         <label>
           Categoría
-          <select name="categoriaId" [(ngModel)]="productForm.categoriaId" required>
+          <select name="categoriaId" [(ngModel)]="productForm.categoriaId" (change)="onCategoryChange()" required>
             <option [ngValue]="0">Selecciona una categoría</option>
-            @for (category of categoriesService.categories(); track category.id) {
+            @for (
+            category of categoriesService.categories();
+            track category.id
+            ) {
             <option [ngValue]="category.id">{{ category.nombre }}</option>
             }
           </select>
         </label>
 
         <label>
+          Nueva categoría
+          <div class="inline-row">
+            <input name="newCategoryName" [(ngModel)]="newCategoryName" placeholder="Ej: Eventos">
+            <input name="newCategoryDescription" [(ngModel)]="newCategoryDescription" placeholder="Descripción">
+            <button type="button" class="act-btn act-edit" (click)="createCategory()">Agregar</button>
+          </div>
+        </label>
+
+        <label>
           Subcategoría
-          <input name="subcategoria" [(ngModel)]="productForm.subcategoria" placeholder="Naruto">
+          <select name="subcategoria" [(ngModel)]="productForm.subcategoria">
+            <option value="">Selecciona subcategoría</option>
+            @for (
+            subcategory of categoriesService.subcategories();
+            track subcategory.id
+            ) {
+            <option [value]="subcategory.nombre">
+              {{ subcategory.nombre }}
+            </option>
+            }
+          </select>
+        </label>
+
+        <label>
+          Nueva subcategoría
+          <div class="inline-row">
+            <input name="newSubcategoryName" [(ngModel)]="newSubcategoryName" placeholder="Ej: Naruto" />
+            <button type="button" class="act-btn act-edit" (click)="createSubcategory()">
+              Agregar
+            </button>
+          </div>
         </label>
 
         <label>
           Precio
-          <input name="precio" type="number" min="0" step="0.01" [(ngModel)]="productForm.precio" required>
+          <input name="precio" type="number" min="0" step="0.01" [(ngModel)]="productForm.precio" required />
         </label>
 
         <label>
           Stock
-          <input name="stock" type="number" min="0" [(ngModel)]="productForm.stock" required>
+          <input name="stock" type="number" min="0" [(ngModel)]="productForm.stock" required />
         </label>
 
         <label>
           Imagen
-          <input name="imagen" type="file" accept="image/*" (change)="onImageSelected($event)">
+          <input name="imagen" type="file" accept="image/*" (change)="onImageSelected($event)" />
         </label>
 
+        <label>
+          Imágenes adicionales
+          <input name="extraImages" type="file" accept="image/*" multiple (change)="onExtraImagesSelected($event)" />
+        </label>
 
         <label>
           Tallas
-          <input name="tallas" [(ngModel)]="productForm.tallas" placeholder="S,M,L,XL">
+          <select name="tallas" [(ngModel)]="productForm.tallas">
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+          </select>
         </label>
 
         <label>
           Colores
-          <input name="colores" [(ngModel)]="productForm.colores" placeholder="Negro,Blanco,Rojo">
+          <div class="color-picker-row">
+            <input name="selectedColor" type="color" [(ngModel)]="selectedColor" />
+            <span>{{ selectedColor }}</span>
+          </div>
         </label>
+
+        <div class="variant-actions">
+          <button type="button" class="btn-outline" (click)="addVariant()">
+            Agregar variante con talla/color/stock
+          </button>
+        </div>
       </div>
+
+      @if (variants.length > 0) {
+      <div class="variant-list">
+        <h4>Variantes agregadas</h4>
+        @for (variant of variants; track $index; let i = $index) {
+        <div class="variant-item">
+          <span class="variant-color" [style.background]="variant.colorHex"></span>
+          <span>{{ variant.colorHex }}</span>
+          <span>Talla: {{ variant.talla }}</span>
+          <span>Stock: {{ variant.stock }}</span>
+          <span>Precio: S/. {{ variant.precio }}</span>
+          <button type="button" class="act-btn act-del" (click)="removeVariant(i)">
+            Quitar
+          </button>
+        </div>
+        }
+      </div>
+      }
 
       <label class="full-field">
         Descripción
@@ -168,7 +241,8 @@
 
     <div class="data-table">
       <div class="table-header">
-        <h3>Gestión de productos</h3><span>{{ productsService.products().length }} productos</span>
+        <h3>Gestión de productos</h3>
+        <span>{{ productsService.products().length }} productos</span>
       </div>
       <table>
         <thead>

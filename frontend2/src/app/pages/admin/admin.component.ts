@@ -28,6 +28,8 @@ export class AdminComponent {
   readonly tab = signal<AdminTab>("dashboard");
   readonly showProductForm = signal(false);
   selectedImage: File | null = null;
+  newCategoryName = "";
+  newCategoryDescription = "";
 
   selectedColor = "#111111";
   newSubcategoryName = "";
@@ -94,7 +96,10 @@ export class AdminComponent {
       nombre: this.productForm.nombre,
       descripcion: this.productForm.descripcion,
       precio: Number(this.productForm.precio),
-      stock: Number(this.productForm.stock),
+      stock: this.variants.reduce(
+        (total, variant) => total + Number(variant.stock),
+        0,
+      ),
       subcategoria: this.productForm.subcategoria,
       imagenUrl: null,
       categoriaId: Number(this.productForm.categoriaId),
@@ -141,7 +146,6 @@ export class AdminComponent {
         this.toast.show("No se pudo crear el producto");
       },
     });
-
   }
 
   private resetProductForm(): void {
@@ -169,6 +173,22 @@ export class AdminComponent {
       Number(this.productForm.categoriaId),
     );
     this.productForm.subcategoria = "";
+  }
+
+  createCategory(): void {
+    if (!this.newCategoryName) {
+      this.toast.show("Escribe el nombre de la categoría");
+      return;
+    }
+
+    this.categoriesService.createCategory({
+      nombre: this.newCategoryName,
+      descripcion: this.newCategoryDescription || "Sin descripción",
+    });
+
+    this.toast.show("Categoría creada");
+    this.newCategoryName = "";
+    this.newCategoryDescription = "";
   }
 
   createSubcategory(): void {
