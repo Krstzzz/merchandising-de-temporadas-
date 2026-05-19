@@ -101,3 +101,40 @@ function inferEmoji(categoria?: string): string {
 
   return '👕';
 }
+
+export interface BackendSubcategoria {
+  id: number;
+  nombre: string;
+  categoria: BackendCategoria;
+}
+
+export interface CreateSubcategoriaRequest {
+  nombre: string;
+  categoriaId: number;
+}
+
+export interface BackendProductoVariante {
+  id: number;
+  colorHex: string;
+  talla: string;
+  stock: number;
+  precio: number | null;
+  sku: string | null;
+}
+
+export interface CreateProductoVarianteRequest {
+  productoId: number;
+  colorHex: string;
+  talla: string;
+  stock: number;
+  precio: number | null;
+  sku: string | null;
+}
+
+export interface BackendProductoImagen {
+  id: number;
+  imagenUrl: string;
+  colorHex: string | null;
+  principal: boolean;
+  orden: number;
+}

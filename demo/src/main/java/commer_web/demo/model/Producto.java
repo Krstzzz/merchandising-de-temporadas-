@@ -75,6 +75,16 @@ public class Producto {
         actualizarEstadoPorStock();
     }
 
+    @ManyToOne
+    @JoinColumn(name = "subcategoria_id")
+    private Subcategoria subcategoriaRef;
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductoVariante> variantes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductoImagen> imagenes = new ArrayList<>();
+
     public void actualizarEstadoPorStock() {
         if (stock == null || stock <= 0) {
             estado = EstadoProducto.NO_DISPONIBLE;
@@ -183,4 +193,39 @@ public class Producto {
     public LocalDateTime getFechaActualizacion() {
         return fechaActualizacion;
     }
+
+    public Subcategoria getSubcategoriaRef() {
+        return subcategoriaRef;
+    }
+
+    public void setSubcategoriaRef(Subcategoria subcategoriaRef) {
+        this.subcategoriaRef = subcategoriaRef;
+    }
+
+    public List<ProductoVariante> getVariantes() {
+        return variantes;
+    }
+
+    public void setVariantes(List<ProductoVariante> variantes) {
+        this.variantes = variantes;
+    }
+
+    public List<ProductoImagen> getImagenes() {
+        return imagenes;
+    }
+
+    public void setImagenes(List<ProductoImagen> imagenes) {
+        this.imagenes = imagenes;
+    }
+
+    public void agregarVariante(ProductoVariante variante) {
+        variantes.add(variante);
+        variante.setProducto(this);
+    }
+
+    public void agregarImagen(ProductoImagen imagen) {
+        imagenes.add(imagen);
+        imagen.setProducto(this);
+    }
+
 }

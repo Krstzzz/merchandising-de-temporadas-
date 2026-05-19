@@ -139,9 +139,10 @@
         </label>
 
         <label>
-          Imagen URL
-          <input name="imagenUrl" [(ngModel)]="productForm.imagenUrl" placeholder="https://...">
+          Imagen
+          <input name="imagen" type="file" accept="image/*" (change)="onImageSelected($event)">
         </label>
+
 
         <label>
           Tallas

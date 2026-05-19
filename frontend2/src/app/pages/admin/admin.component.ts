@@ -1,36 +1,55 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { CreateProductRequest } from '../../models/product.model';
-import { CategoriesService } from '../../services/categories.service';
-import { ProductsService } from '../../services/products.service';
-import { ToastService } from '../../services/toast.service';
+import { Component, inject, signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { RouterLink } from "@angular/router";
+import {
+  CreateProductRequest,
+  CreateProductoVarianteRequest,
+} from "../../models/product.model";
+import { ProductImagesService } from "../../services/product-images.service";
+import { ProductVariantsService } from "../../services/product-variants.service";
+import { CategoriesService } from "../../services/categories.service";
+import { ProductsService } from "../../services/products.service";
+import { ToastService } from "../../services/toast.service";
 
-type AdminTab = 'dashboard' | 'products' | 'orders' | 'users';
+type AdminTab = "dashboard" | "products" | "orders" | "users";
 
 @Component({
-  selector: 'app-admin',
+  selector: "app-admin",
   imports: [RouterLink, FormsModule],
-  templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css'
+  templateUrl: "./admin.component.html",
+  styleUrl: "./admin.component.css",
 })
 export class AdminComponent {
+  readonly variantsService = inject(ProductVariantsService);
+  readonly imagesService = inject(ProductImagesService);
   readonly productsService = inject(ProductsService);
   readonly categoriesService = inject(CategoriesService);
   private readonly toast = inject(ToastService);
-  readonly tab = signal<AdminTab>('dashboard');
+  readonly tab = signal<AdminTab>("dashboard");
   readonly showProductForm = signal(false);
+  selectedImage: File | null = null;
+
+  selectedColor = "#111111";
+  newSubcategoryName = "";
+  extraImages: File[] = [];
+
+  variants: Array<{
+    colorHex: string;
+    talla: string;
+    stock: number;
+    precio: number | null;
+    sku: string | null;
+  }> = [];
 
   productForm = {
-    nombre: '',
-    descripcion: '',
+    nombre: "",
+    descripcion: "",
     precio: 0,
     stock: 0,
-    subcategoria: '',
-    imagenUrl: '',
+    subcategoria: "",
     categoriaId: 0,
-    tallas: 'S,M,L,XL',
-    colores: 'Negro,Blanco'
+    tallas: "S,M,L,XL",
+    colores: "Negro,Blanco",
   };
 
   constructor() {
@@ -44,7 +63,10 @@ export class AdminComponent {
 
   openProductForm(): void {
     this.showProductForm.set(true);
-    if (this.categoriesService.categories().length > 0 && !this.productForm.categoriaId) {
+    if (
+      this.categoriesService.categories().length > 0 &&
+      !this.productForm.categoriaId
+    ) {
       this.productForm.categoriaId = this.categoriesService.categories()[0].id;
     }
   }
@@ -53,9 +75,18 @@ export class AdminComponent {
     this.showProductForm.set(false);
   }
 
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.selectedImage = input.files?.[0] ?? null;
+  }
+
   saveProduct(): void {
-    if (!this.productForm.nombre || !this.productForm.descripcion || !this.productForm.categoriaId) {
-      this.toast.show('Completa nombre, descripción y categoría');
+    if (
+      !this.productForm.nombre ||
+      !this.productForm.descripcion ||
+      !this.productForm.categoriaId
+    ) {
+      this.toast.show("Completa nombre, descripción y categoría");
       return;
     }
 
@@ -65,36 +96,124 @@ export class AdminComponent {
       precio: Number(this.productForm.precio),
       stock: Number(this.productForm.stock),
       subcategoria: this.productForm.subcategoria,
-      imagenUrl: this.productForm.imagenUrl || null,
+      imagenUrl: null,
       categoriaId: Number(this.productForm.categoriaId),
       tallas: this.splitValues(this.productForm.tallas),
-      colores: this.splitValues(this.productForm.colores)
+      colores: this.splitValues(this.productForm.colores),
     };
+    const create$ = this.selectedImage
+      ? this.productsService.createProductWithImage(request, this.selectedImage)
+      : this.productsService.createProduct(request);
 
-    this.productsService.createProduct(request);
-    this.toast.show('Producto creado correctamente');
-    this.resetProductForm();
-    this.showProductForm.set(false);
+    create$.subscribe({
+      next: (product) => {
+        for (const variant of this.variants) {
+          const variantRequest: CreateProductoVarianteRequest = {
+            productoId: product.id,
+            colorHex: variant.colorHex,
+            talla: variant.talla,
+            stock: variant.stock,
+            precio: variant.precio,
+            sku: variant.sku,
+          };
+
+          this.variantsService.createVariant(variantRequest);
+        }
+
+        this.extraImages.forEach((image, index) => {
+          this.imagesService.uploadImage(
+            product.id,
+            image,
+            null,
+            false,
+            index + 2,
+          );
+        });
+
+        this.toast.show("Producto creado correctamente");
+        this.resetProductForm();
+        this.selectedImage = null;
+        this.extraImages = [];
+        this.variants = [];
+        this.showProductForm.set(false);
+      },
+      error: () => {
+        this.toast.show("No se pudo crear el producto");
+      },
+    });
+
   }
 
   private resetProductForm(): void {
     this.productForm = {
-      nombre: '',
-      descripcion: '',
+      nombre: "",
+      descripcion: "",
       precio: 0,
       stock: 0,
-      subcategoria: '',
-      imagenUrl: '',
+      subcategoria: "",
       categoriaId: this.categoriesService.categories()[0]?.id ?? 0,
-      tallas: 'S,M,L,XL',
-      colores: 'Negro,Blanco'
+      tallas: "S,M,L,XL",
+      colores: "Negro,Blanco",
     };
   }
 
   private splitValues(value: string): string[] {
     return value
-      .split(',')
+      .split(",")
       .map((item) => item.trim())
       .filter(Boolean);
+  }
+
+  onCategoryChange(): void {
+    this.categoriesService.loadSubcategoriesByCategory(
+      Number(this.productForm.categoriaId),
+    );
+    this.productForm.subcategoria = "";
+  }
+
+  createSubcategory(): void {
+    if (!this.newSubcategoryName || !this.productForm.categoriaId) {
+      this.toast.show("Selecciona categoría y escribe subcategoría");
+      return;
+    }
+
+    this.categoriesService.createSubcategory({
+      nombre: this.newSubcategoryName,
+      categoriaId: Number(this.productForm.categoriaId),
+    });
+
+    this.productForm.subcategoria = this.newSubcategoryName;
+    this.newSubcategoryName = "";
+    this.toast.show("Subcategoría creada");
+  }
+
+  addVariant(): void {
+    if (
+      !this.selectedColor ||
+      !this.productForm.tallas ||
+      this.productForm.stock <= 0
+    ) {
+      this.toast.show("Selecciona color, talla y stock");
+      return;
+    }
+
+    this.variants.push({
+      colorHex: this.selectedColor,
+      talla: this.productForm.tallas,
+      stock: Number(this.productForm.stock),
+      precio: Number(this.productForm.precio) || null,
+      sku: null,
+    });
+
+    this.toast.show("Variante agregada");
+  }
+
+  removeVariant(index: number): void {
+    this.variants.splice(index, 1);
+  }
+
+  onExtraImagesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.extraImages = Array.from(input.files ?? []);
   }
 }
