@@ -6,34 +6,39 @@
   <span class="sep">›</span>
   <span class="current">{{ product.name }}</span>
 </div>
+
 <section class="detail-grid">
   <div class="detail-img">
-  @if (product.imageUrl) {
-    <img [src]="'http://localhost:8080' + product.imageUrl" [alt]="product.name">
-  } @else {
+    @if (selectedImageUrl()) {
+    <img [src]="'http://localhost:8080' + selectedImageUrl()" [alt]="product.name">
+    } @else {
     <span>{{ product.emoji }}</span>
-  }
-</div>
+    }
+  </div>
 
   <div class="detail-info">
     <div class="detail-cat">{{ product.cat }} - {{ product.sub }}</div>
     <h1 class="detail-name">{{ product.name }}</h1>
     <div class="detail-price">S/. {{ product.price }}</div>
-    <div class="stock-badge">✓ {{ product.stock }} disponibles</div>
+    <div class="stock-badge">✓ {{ selectedStock() }} disponibles</div>
     <p class="detail-desc">{{ product.desc }}</p>
-
-    <div class="variant-label">Talla</div>
-    <div class="size-grid">
-     @for (item of product.sizes; track item) {
-      <button class="size-btn" [class.active]="size() === item" (click)="size.set(item)">{{ item }}</button>
-      }
-    </div>
 
     <div class="variant-label">Color</div>
     <div class="color-grid">
-      @for (item of product.colors; track item; let i = $index) {
+      @for (item of availableColors(); track item) {
       <button class="color-swatch" [class.active]="color() === item" [style.background]="item"
-        [title]="labels[i] || item" (click)="color.set(item)"></button>
+        [title]="item" (click)="color.set(item)"></button>
+      } @empty {
+      <span class="variant-empty">Sin colores disponibles</span>
+      }
+    </div>
+
+    <div class="variant-label">Talla</div>
+    <div class="size-grid">
+      @for (item of availableSizes(); track item) {
+      <button class="size-btn" [class.active]="size() === item" (click)="size.set(item)">{{ item }}</button>
+      } @empty {
+      <span class="variant-empty">Sin tallas para este color</span>
       }
     </div>
 
@@ -44,7 +49,7 @@
       <button class="qty-btn" (click)="changeQty(1)">+</button>
     </div>
 
-    <button class="btn-red" (click)="add()">Agregar al carrito</button>
+    <button class="btn-red" [disabled]="!selectedVariant()" (click)="add()">Agregar al carrito</button>
     <a class="btn-outline cart-link" routerLink="/cart">Ver carrito →</a>
   </div>
 </section>

@@ -1,19 +1,26 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
+import { Injectable, inject } from "@angular/core";
 import {
   BackendProductoVariante,
-  CreateProductoVarianteRequest
-} from '../models/product.model';
+  CreateProductoVarianteRequest,
+} from "../models/product.model";
+import { Observable } from "rxjs";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class ProductVariantsService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:8080/api/producto-variantes';
+  private readonly apiUrl = "http://localhost:8080/api/producto-variantes";
+
+  getByProduct(productId: number): Observable<BackendProductoVariante[]> {
+    return this.http.get<BackendProductoVariante[]>(
+      `${this.apiUrl}/producto/${productId}`,
+    );
+  }
 
   createVariant(request: CreateProductoVarianteRequest): void {
     this.http.post<BackendProductoVariante>(this.apiUrl, request).subscribe({
-      next: (variant) => console.log('Variante creada', variant),
-      error: (error) => console.error('Error creando variante', error)
+      next: (variant) => console.log("Variante creada", variant),
+      error: (error) => console.error("Error creando variante", error),
     });
   }
 }

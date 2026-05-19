@@ -35,3 +35,14 @@
   border-radius: 16px;
   display: block;
 }
+
+.variant-empty {
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 8px 0;
+}
+
+.btn-red:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
