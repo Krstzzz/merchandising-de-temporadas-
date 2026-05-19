@@ -1,14 +1,14 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CartService } from '../../services/cart.service';
-import { ProductsService } from '../../services/products.service';
-import { ToastService } from '../../services/toast.service';
+import { Component, computed, effect, inject, signal } from "@angular/core";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { CartService } from "../../services/cart.service";
+import { ProductsService } from "../../services/products.service";
+import { ToastService } from "../../services/toast.service";
 
 @Component({
-  selector: 'app-product-detail',
+  selector: "app-product-detail",
   imports: [RouterLink],
-  templateUrl: './product-detail.component.html',
-  styleUrl: './product-detail.component.css'
+  templateUrl: "./product-detail.component.html",
+  styleUrl: "./product-detail.component.css",
 })
 export class ProductDetailComponent {
   private readonly productsService = inject(ProductsService);
@@ -17,20 +17,25 @@ export class ProductDetailComponent {
   private readonly cart = inject(CartService);
   private readonly toast = inject(ToastService);
 
-  readonly sizes = ['S', 'M', 'L', 'XL', 'XXL'];
-  readonly labels = ['Negro', 'Blanco', 'Rojo', 'Azul', 'Amarillo'];
-  readonly size = signal('L');
+  readonly sizes = ["S", "M", "L", "XL", "XXL"];
+  readonly labels = ["Negro", "Blanco", "Rojo", "Azul", "Amarillo"];
+  readonly size = signal("L");
   readonly qty = signal(1);
-  readonly product = computed(() => this.productsService.byId(Number(this.route.snapshot.paramMap.get('id'))));
-  readonly color = signal('#111');
+  readonly product = computed(() =>
+    this.productsService.byId(Number(this.route.snapshot.paramMap.get("id"))),
+  );
+  readonly color = signal("");
 
   constructor() {
-    const product = this.product();
-    if (!product) {
-      this.router.navigateByUrl('/');
-      return;
-    }
-    this.color.set(product.colors[0] ?? '#111');
+    this.productsService.loadProducts();
+
+    effect(() => {
+      const product = this.product();
+      if (!product) return;
+
+      this.color.set(product.colors[0] ?? "");
+      this.size.set(product.sizes[0] ?? "M");
+    });
   }
 
   changeQty(delta: number): void {

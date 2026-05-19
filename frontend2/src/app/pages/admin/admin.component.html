@@ -2,20 +2,24 @@
   <aside class="admin-sidebar">
     <a class="logo" routerLink="/">Trend<span>Store</span></a>
     <div class="sidebar-nav">
-      <button class="sidebar-item" [class.active]="tab() === 'dashboard'" (click)="tab.set('dashboard')"><span
-          class="sidebar-icon">📊</span><span>Dashboard</span></button>
-      <button class="sidebar-item" [class.active]="tab() === 'products'" (click)="tab.set('products')"><span
-          class="sidebar-icon">👕</span><span>Productos</span></button>
-      <button class="sidebar-item" [class.active]="tab() === 'orders'" (click)="tab.set('orders')"><span
-          class="sidebar-icon">📦</span><span>Pedidos</span></button>
-      <button class="sidebar-item" [class.active]="tab() === 'users'" (click)="tab.set('users')"><span
-          class="sidebar-icon">👥</span><span>Usuarios</span></button>
+      <button class="sidebar-item" [class.active]="tab() === 'dashboard'" (click)="tab.set('dashboard')">
+        <span class="sidebar-icon">📊</span><span>Dashboard</span>
+      </button>
+      <button class="sidebar-item" [class.active]="tab() === 'products'" (click)="tab.set('products')">
+        <span class="sidebar-icon">👕</span><span>Productos</span>
+      </button>
+      <button class="sidebar-item" [class.active]="tab() === 'orders'" (click)="tab.set('orders')">
+        <span class="sidebar-icon">📦</span><span>Pedidos</span>
+      </button>
+      <button class="sidebar-item" [class.active]="tab() === 'users'" (click)="tab.set('users')">
+        <span class="sidebar-icon">👥</span><span>Usuarios</span>
+      </button>
       <a class="sidebar-item exit" routerLink="/"><span class="sidebar-icon">🚪</span><span>Salir</span></a>
     </div>
   </aside>
 
   <main class="admin-content">
-    @if (tab() === 'dashboard') {
+    @if (tab() === "dashboard") {
     <div class="admin-header">
       <div class="admin-title">Dashboard</div>
       <div class="date">Lunes, 28 Abril 2025</div>
@@ -44,7 +48,10 @@
     </div>
     <div class="data-table">
       <div class="table-header">
-        <h3>Últimos pedidos</h3><button class="btn-outline small" (click)="tab.set('orders')">Ver todos →</button>
+        <h3>Últimos pedidos</h3>
+        <button class="btn-outline small" (click)="tab.set('orders')">
+          Ver todos →
+        </button>
       </div>
       <table>
         <thead>
@@ -87,14 +94,80 @@
     </div>
     }
 
-    @if (tab() === 'products') {
+    @if (tab() === "products") {
     <div class="admin-header">
-      <div class="admin-title">Productos</div><button class="btn-primary"
-        (click)="notify('Formulario nuevo producto abierto')">+ Nuevo producto</button>
+      <div class="admin-title">Productos</div><button class="btn-primary" (click)="openProductForm()">+ Nuevo
+        producto</button>
     </div>
+
+    @if (showProductForm()) {
+    <form class="product-form" (ngSubmit)="saveProduct()">
+      <div class="form-header">
+        <h3>Nuevo producto</h3>
+        <button type="button" class="act-btn act-del" (click)="closeProductForm()">Cerrar</button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          Nombre
+          <input name="nombre" [(ngModel)]="productForm.nombre" placeholder="Polo Naruto Hokage" required>
+        </label>
+
+        <label>
+          Categoría
+          <select name="categoriaId" [(ngModel)]="productForm.categoriaId" required>
+            <option [ngValue]="0">Selecciona una categoría</option>
+            @for (category of categoriesService.categories(); track category.id) {
+            <option [ngValue]="category.id">{{ category.nombre }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          Subcategoría
+          <input name="subcategoria" [(ngModel)]="productForm.subcategoria" placeholder="Naruto">
+        </label>
+
+        <label>
+          Precio
+          <input name="precio" type="number" min="0" step="0.01" [(ngModel)]="productForm.precio" required>
+        </label>
+
+        <label>
+          Stock
+          <input name="stock" type="number" min="0" [(ngModel)]="productForm.stock" required>
+        </label>
+
+        <label>
+          Imagen URL
+          <input name="imagenUrl" [(ngModel)]="productForm.imagenUrl" placeholder="https://...">
+        </label>
+
+        <label>
+          Tallas
+          <input name="tallas" [(ngModel)]="productForm.tallas" placeholder="S,M,L,XL">
+        </label>
+
+        <label>
+          Colores
+          <input name="colores" [(ngModel)]="productForm.colores" placeholder="Negro,Blanco,Rojo">
+        </label>
+      </div>
+
+      <label class="full-field">
+        Descripción
+        <textarea name="descripcion" [(ngModel)]="productForm.descripcion" rows="3" required></textarea>
+      </label>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Guardar producto</button>
+      </div>
+    </form>
+    }
+
     <div class="data-table">
       <div class="table-header">
-        <h3>Gestión de productos</h3><span>133 productos</span>
+        <h3>Gestión de productos</h3><span>{{ productsService.products().length }} productos</span>
       </div>
       <table>
         <thead>
@@ -109,7 +182,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (product of products; track product.id) {
+          @for (product of productsService.products(); track product.id) {
           <tr>
             <td>
               <div class="td-img">{{ product.emoji }}</div>
@@ -118,12 +191,21 @@
             <td>{{ product.cat }}</td>
             <td>S/. {{ product.price }}</td>
             <td>{{ product.stock }}</td>
-            <td><span class="badge" [class.badge-green]="product.stock > 15"
-                [class.badge-orange]="product.stock <= 15 && product.stock > 5"
-                [class.badge-red]="product.stock <= 5">{{ product.stock > 15 ? 'Disponible' : product.stock > 5 ? 'Pocas
-                unidades' : 'Agotándose' }}</span></td>
-            <td class="action-btns"><button class="act-btn act-edit">Editar</button><button
-                class="act-btn act-del">Eliminar</button></td>
+            <td>
+              <span class="badge" [class.badge-green]="product.stock > 15" [class.badge-orange]="
+                      product.stock <= 15 && product.stock > 5
+                    " [class.badge-red]="product.stock <= 5">{{
+                product.stock > 15
+                ? "Disponible"
+                : product.stock > 5
+                ? "Pocas
+                unidades"
+                : "Agotándose"
+                }}</span>
+            </td>
+            <td class="action-btns">
+              <button class="act-btn act-edit">Editar</button><button class="act-btn act-del">Eliminar</button>
+            </td>
           </tr>
           }
         </tbody>
@@ -131,11 +213,13 @@
     </div>
     }
 
-    @if (tab() === 'orders') {
+    @if (tab() === "orders") {
     <div class="admin-header">
       <div class="admin-title">Pedidos</div>
-      <div class="filter-row"><button class="filter-btn active">Todos (47)</button><button
-          class="filter-btn">Pendientes</button><button class="filter-btn">En camino</button></div>
+      <div class="filter-row">
+        <button class="filter-btn active">Todos (47)</button><button class="filter-btn">Pendientes</button><button
+          class="filter-btn">En camino</button>
+      </div>
     </div>
     <div class="data-table">
       <table>
@@ -160,8 +244,9 @@
             <td>S/.90</td>
             <td>Tarjeta</td>
             <td><span class="badge badge-green">Entregado</span></td>
-            <td class="action-btns"><button class="act-btn act-edit">Ver</button><button
-                class="act-btn act-edit">Editar</button></td>
+            <td class="action-btns">
+              <button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button>
+            </td>
           </tr>
           <tr>
             <td>#846</td>
@@ -171,8 +256,9 @@
             <td>S/.85</td>
             <td>Contacto</td>
             <td><span class="badge badge-orange">En camino</span></td>
-            <td class="action-btns"><button class="act-btn act-edit">Ver</button><button
-                class="act-btn act-edit">Editar</button></td>
+            <td class="action-btns">
+              <button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button>
+            </td>
           </tr>
           <tr>
             <td>#845</td>
@@ -182,18 +268,21 @@
             <td>S/.135</td>
             <td>Tarjeta</td>
             <td><span class="badge badge-blue">Procesando</span></td>
-            <td class="action-btns"><button class="act-btn act-edit">Ver</button><button
-                class="act-btn act-edit">Editar</button></td>
+            <td class="action-btns">
+              <button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
     }
 
-    @if (tab() === 'users') {
+    @if (tab() === "users") {
     <div class="admin-header">
-      <div class="admin-title">Usuarios</div><button class="btn-primary" (click)="notify('Nuevo usuario creado')">+
-        Nuevo usuario</button>
+      <div class="admin-title">Usuarios</div>
+      <button class="btn-primary" (click)="notify('Nuevo usuario creado')">
+        + Nuevo usuario
+      </button>
     </div>
     <div class="data-table">
       <table>
@@ -216,8 +305,9 @@
             <td><span class="badge badge-blue">Admin</span></td>
             <td>12</td>
             <td>Ene 2025</td>
-            <td class="action-btns"><button class="act-btn act-edit">Editar</button><button
-                class="act-btn act-del">Eliminar</button></td>
+            <td class="action-btns">
+              <button class="act-btn act-edit">Editar</button><button class="act-btn act-del">Eliminar</button>
+            </td>
           </tr>
           <tr>
             <td>#02</td>
@@ -226,8 +316,9 @@
             <td><span class="badge badge-green">Cliente</span></td>
             <td>5</td>
             <td>Feb 2025</td>
-            <td class="action-btns"><button class="act-btn act-edit">Editar</button><button
-                class="act-btn act-del">Eliminar</button></td>
+            <td class="action-btns">
+              <button class="act-btn act-edit">Editar</button><button class="act-btn act-del">Eliminar</button>
+            </td>
           </tr>
           <tr>
             <td>#03</td>
@@ -236,8 +327,9 @@
             <td><span class="badge badge-green">Cliente</span></td>
             <td>8</td>
             <td>Mar 2025</td>
-            <td class="action-btns"><button class="act-btn act-edit">Editar</button><button
-                class="act-btn act-del">Eliminar</button></td>
+            <td class="action-btns">
+              <button class="act-btn act-edit">Editar</button><button class="act-btn act-del">Eliminar</button>
+            </td>
           </tr>
         </tbody>
       </table>

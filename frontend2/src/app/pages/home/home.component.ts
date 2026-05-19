@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { ProductCardComponent } from '../../shared/product-card/product-card.component';
@@ -14,14 +14,16 @@ import { ToastService } from '../../services/toast.service';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  private readonly productsService = inject(ProductsService);
+add($event: Product) {
+throw new Error('Method not implemented.');
+}
+  readonly productsService = inject(ProductsService);
   private readonly cart = inject(CartService);
   private readonly toast = inject(ToastService);
 
-  readonly recent = this.productsService.products.slice(0, 8);
+  readonly recent = computed(() => this.productsService.products().slice(0, 8));
 
-  add(product: Product): void {
-    this.cart.add(product);
-    this.toast.show(`${product.name} agregado al carrito`);
+  constructor() {
+    this.productsService.loadProducts();
   }
 }

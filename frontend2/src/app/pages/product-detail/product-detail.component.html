@@ -7,7 +7,14 @@
   <span class="current">{{ product.name }}</span>
 </div>
 <section class="detail-grid">
-  <div class="detail-img">{{ product.emoji }}</div>
+  <div class="detail-img">
+  @if (product.imageUrl) {
+    <img [src]="'http://localhost:8080' + product.imageUrl" [alt]="product.name">
+  } @else {
+    <span>{{ product.emoji }}</span>
+  }
+</div>
+
   <div class="detail-info">
     <div class="detail-cat">{{ product.cat }} - {{ product.sub }}</div>
     <h1 class="detail-name">{{ product.name }}</h1>
@@ -17,7 +24,7 @@
 
     <div class="variant-label">Talla</div>
     <div class="size-grid">
-      @for (item of sizes; track item) {
+     @for (item of product.sizes; track item) {
       <button class="size-btn" [class.active]="size() === item" (click)="size.set(item)">{{ item }}</button>
       }
     </div>

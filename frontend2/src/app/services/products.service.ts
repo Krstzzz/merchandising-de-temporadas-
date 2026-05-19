@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { BackendProduct, Product, mapBackendProduct } from '../models/product.model';
+import { BackendProduct, CreateProductRequest, Product, mapBackendProduct } from '../models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
@@ -22,6 +22,15 @@ export class ProductsService {
         console.error('Error cargando productos', error);
         this.loading.set(false);
       }
+    });
+  }
+
+  createProduct(request: CreateProductRequest): void {
+    this.http.post<BackendProduct>(this.apiUrl, request).subscribe({
+      next: (product) => {
+        this.products.update((items) => [...items, mapBackendProduct(product)]);
+      },
+      error: (error) => console.error('Error creando producto', error)
     });
   }
 

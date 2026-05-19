@@ -45,7 +45,7 @@
 <section class="section recent">
   <div class="section-title">Productos recientes</div>
   <div class="product-grid">
-    @for (product of recent; track product.id) {
+    @for (product of recent(); track product.id) {
     <app-product-card [product]="product" (quickAdd)="add($event)" />
     }
   </div>

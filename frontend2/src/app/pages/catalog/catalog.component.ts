@@ -24,6 +24,7 @@ export class CatalogComponent {
   readonly filters = ['Todos', 'Polo', 'Hoodie', 'Anime', 'Videojuegos', 'Películas', 'Música'];
 
   constructor() {
+    this.productsService.loadProducts();
     this.route.queryParamMap.subscribe((params) => {
       this.activeFilter.set(params.get('q') ?? 'Todos');
     });

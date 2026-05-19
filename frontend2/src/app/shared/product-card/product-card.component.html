@@ -1,8 +1,19 @@
 <article class="product-card" [routerLink]="['/product', product.id]">
   <div class="product-img">
-    {{ product.emoji }}
-    @if (product.badge) {
+    <div class="product-img">
+      @if (product.imageUrl) {
+      <img [src]="'http://localhost:8080' + product.imageUrl" [alt]="product.name">
+      } @else {
+      <span>{{ product.emoji }}</span>
+      }
+
+      @if (product.badge) {
       <div class="product-badge">{{ product.badge }}</div>
+      }
+    </div>
+
+    @if (product.badge) {
+    <div class="product-badge">{{ product.badge }}</div>
     }
   </div>
   <div class="product-info">
