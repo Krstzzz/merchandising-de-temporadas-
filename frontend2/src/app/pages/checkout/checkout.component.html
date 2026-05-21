@@ -8,38 +8,58 @@
     <div class="panel">
       <h3>Datos de envío</h3>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" placeholder="Juan"></div>
-        <div class="form-group"><label class="form-label">Apellido</label><input class="form-input" placeholder="Pérez"></div>
+        <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" placeholder="Juan">
+        </div>
+        <div class="form-group"><label class="form-label">Apellido</label><input class="form-input" placeholder="Pérez">
+        </div>
       </div>
-      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="tu@email.com"></div>
-      <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" placeholder="+51 999 999 999"></div>
-      <div class="form-group"><label class="form-label">Dirección</label><input class="form-input" placeholder="Av. Ejemplo 123, Lima"></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email"
+          placeholder="tu@email.com"></div>
+      <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input"
+          placeholder="+51 999 999 999"></div>
+      <div class="form-group"><label class="form-label">Dirección</label><input class="form-input"
+          [(ngModel)]="shippingForm.direccionEnvio" name="direccionEnvio" placeholder="Av. Ejemplo 123, Lima">
+      </div>
     </div>
 
     <div class="panel">
       <h3>Método de pago</h3>
-      <div class="payment-option" [class.active]="payment() === 'card'" (click)="payment.set('card')">
+      <div class="payment-option" [class.active]="payment() === 'TARJETA'" (click)="payment.set('TARJETA')">
         <div class="payment-top">
-          <div class="payment-radio"><div class="payment-radio-dot"></div></div>
-          <div><div class="payment-name">💳 Tarjeta débito / crédito</div><div class="payment-desc">Visa, Mastercard, American Express</div></div>
+          <div class="payment-radio">
+            <div class="payment-radio-dot"></div>
+          </div>
+          <div>
+            <div class="payment-name">💳 Tarjeta débito / crédito</div>
+            <div class="payment-desc">Visa, Mastercard, American Express</div>
+          </div>
         </div>
-        @if (payment() === 'card') {
-          <div class="payment-body">
-            <div class="form-group"><label class="form-label">Número de tarjeta</label><input class="form-input" placeholder="0000 0000 0000 0000"></div>
-            <div class="form-row">
-              <div class="form-group"><label class="form-label">Vencimiento</label><input class="form-input" placeholder="MM/AA"></div>
-              <div class="form-group"><label class="form-label">CVV</label><input class="form-input" placeholder="123"></div>
+        @if (payment() === 'TARJETA') {
+        <div class="payment-body">
+          <div class="form-group"><label class="form-label">Número de tarjeta</label><input class="form-input"
+              placeholder="0000 0000 0000 0000"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Vencimiento</label><input class="form-input"
+                placeholder="MM/AA"></div>
+            <div class="form-group"><label class="form-label">CVV</label><input class="form-input" placeholder="123">
             </div>
           </div>
+        </div>
         }
       </div>
-      <div class="payment-option" [class.active]="payment() === 'contact'" (click)="payment.set('contact')">
+      <div class="payment-option" [class.active]="payment() === 'CONTACTO'" (click)="payment.set('CONTACTO')">
         <div class="payment-top">
-          <div class="payment-radio"><div class="payment-radio-dot"></div></div>
-          <div><div class="payment-name">💬 Pagar por contacto</div><div class="payment-desc">El proveedor se contactará contigo</div></div>
+          <div class="payment-radio">
+            <div class="payment-radio-dot"></div>
+          </div>
+          <div>
+            <div class="payment-name">💬 Pagar por contacto</div>
+            <div class="payment-desc">El proveedor se contactará contigo</div>
+          </div>
         </div>
-        @if (payment() === 'contact') {
-          <div class="whatsapp-info"><span>📱</span><span>Se enviará tu pedido y el proveedor se contactará contigo vía WhatsApp para coordinar el pago y la entrega.</span></div>
+        @if (payment() === 'CONTACTO') {
+        <div class="whatsapp-info"><span>📱</span><span>Se enviará tu pedido y el proveedor se contactará contigo vía
+            WhatsApp para coordinar el pago y la entrega.</span></div>
         }
       </div>
     </div>
@@ -48,19 +68,38 @@
   <aside>
     <div class="order-summary">
       <h3>Tu pedido</h3>
-      @for (item of cart.items(); track $index) {
-        <div class="checkout-item">
-          <div class="checkout-img">{{ item.emoji }}</div>
-          <div><div class="checkout-name">{{ item.name }}</div><div class="checkout-meta">×{{ item.qty }} · T: {{ item.size }}</div></div>
-          <div class="checkout-price">S/.{{ item.price * item.qty }}</div>
+
+      @for (item of cart.backendCart()?.detalles; track item.id) {
+      <div class="checkout-item">
+        <div class="checkout-img">
+          @if (item.producto.imagenUrl) {
+          <img [src]="'http://localhost:8080' + item.producto.imagenUrl" [alt]="item.producto.nombre">
+          } @else {
+          👕
+          }
         </div>
+
+        <div>
+          <div class="checkout-name">{{ item.producto.nombre }}</div>
+          <div class="checkout-meta">
+            ×{{ item.cantidad }} · T: {{ item.talla }}
+            <span class="checkout-color" [style.background]="item.color"></span>
+          </div>
+        </div>
+
+        <div class="checkout-price">S/.{{ item.precioUnitario * item.cantidad }}</div>
+      </div>
       }
+
       <div class="summary-block">
-        <div class="summary-row"><span>Subtotal</span><span>S/. {{ cart.subtotal() }}</span></div>
-        <div class="summary-row"><span>Envío</span><span>{{ cart.shipping() === 0 ? 'Gratis' : 'S/. ' + cart.shipping() }}</span></div>
-        <div class="summary-row total"><span>Total</span><span>S/. {{ cart.total() }}</span></div>
+        <div class="summary-row"><span>Subtotal</span><span>S/. {{ cart.backendSubtotal() }}</span></div>
+        <div class="summary-row"><span>Envío</span><span>{{ cart.backendShipping() === 0 ? 'Gratis' : 'S/. ' +
+            cart.backendShipping() }}</span></div>
+        <div class="summary-row total"><span>Total</span><span>S/. {{ cart.backendTotal() }}</span></div>
       </div>
     </div>
-    <a class="btn-red confirm" routerLink="/confirm" (click)="confirm()">Confirmar pedido →</a>
+
+    <button class="btn-red confirm" type="button" (click)="confirm()">Confirmar pedido →</button>
   </aside>
+
 </section>

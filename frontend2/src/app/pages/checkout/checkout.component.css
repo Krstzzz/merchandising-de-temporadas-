@@ -25,3 +25,8 @@
 @media (max-width: 768px) {
   .checkout-layout { grid-template-columns: 1fr; }
 }
+.detail-img img {width: 100%; height: 100%; object-fit: cover; border-radius: 16px; display: block;}
+.variant-empty { color: var(--text-muted); font-size: 13px; padding: 8px 0;}
+.btn-red:disabled { opacity: 0.45;cursor: not-allowed;}
+.checkout-img img {width: 100%; height: 100%; object-fit: cover; border-radius: 8px;}
+.checkout-color { width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid var(--gray-200); vertical-align: middle; margin-left: 6px;}

@@ -3,10 +3,8 @@ package commer_web.demo.dto;
 public class AgregarCarritoRequest {
 
     private Long clienteId;
-    private Long productoId;
+    private Long varianteId;
     private Integer cantidad;
-    private String talla;
-    private String color;
 
     public Long getClienteId() {
         return clienteId;
@@ -16,12 +14,12 @@ public class AgregarCarritoRequest {
         this.clienteId = clienteId;
     }
 
-    public Long getProductoId() {
-        return productoId;
+    public Long getVarianteId() {
+        return varianteId;
     }
 
-    public void setProductoId(Long productoId) {
-        this.productoId = productoId;
+    public void setVarianteId(Long varianteId) {
+        this.varianteId = varianteId;
     }
 
     public Integer getCantidad() {
@@ -30,21 +28,5 @@ public class AgregarCarritoRequest {
 
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
-    }
-
-    public String getTalla() {
-        return talla;
-    }
-
-    public void setTalla(String talla) {
-        this.talla = talla;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 }

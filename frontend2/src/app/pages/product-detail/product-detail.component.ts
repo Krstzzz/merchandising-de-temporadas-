@@ -1,6 +1,9 @@
 import { Component, computed, effect, inject, signal } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
-import { BackendProductoImagen, BackendProductoVariante } from "../../models/product.model";
+import {
+  BackendProductoImagen,
+  BackendProductoVariante,
+} from "../../models/product.model";
 import { CartService } from "../../services/cart.service";
 import { ProductImagesService } from "../../services/product-images.service";
 import { ProductVariantsService } from "../../services/product-variants.service";
@@ -47,16 +50,24 @@ export class ProductDetailComponent {
 
   readonly selectedVariant = computed(() => {
     return this.variants().find(
-      (variant) => variant.colorHex === this.color() && variant.talla === this.size(),
+      (variant) =>
+        variant.colorHex === this.color() && variant.talla === this.size(),
     );
   });
 
   readonly selectedStock = computed(() => this.selectedVariant()?.stock ?? 0);
 
   readonly selectedImageUrl = computed(() => {
-    const colorImage = this.images().find((image) => image.colorHex === this.color());
+    const colorImage = this.images().find(
+      (image) => image.colorHex === this.color(),
+    );
     const principalImage = this.images().find((image) => image.principal);
-    return colorImage?.imagenUrl ?? principalImage?.imagenUrl ?? this.product()?.imageUrl ?? null;
+    return (
+      colorImage?.imagenUrl ??
+      principalImage?.imagenUrl ??
+      this.product()?.imageUrl ??
+      null
+    );
   });
 
   constructor() {
@@ -102,6 +113,12 @@ export class ProductDetailComponent {
       this.toast.show("No hay stock suficiente para esa variante");
       return;
     }
+
+    this.cart.addBackend({
+      clienteId: 1,
+      varianteId: variant.id,
+      cantidad: this.qty(),
+    });
 
     this.cart.add(product, variant.talla, variant.colorHex, this.qty());
     this.toast.show(`${product.name} agregado al carrito`);

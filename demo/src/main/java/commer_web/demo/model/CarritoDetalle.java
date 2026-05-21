@@ -30,6 +30,10 @@ public class CarritoDetalle {
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
+    @ManyToOne
+    @JoinColumn(name = "variante_id")
+    private ProductoVariante variante;
+
     @Column(nullable = false)
     private Integer cantidad;
 
@@ -45,12 +49,15 @@ public class CarritoDetalle {
     public CarritoDetalle() {
     }
 
-    public CarritoDetalle(Producto producto, Integer cantidad, String talla, String color, BigDecimal precioUnitario) {
-        this.producto = producto;
+    public CarritoDetalle(ProductoVariante variante, Integer cantidad) {
+        this.variante = variante;
+        this.producto = variante.getProducto();
         this.cantidad = cantidad;
-        this.talla = talla;
-        this.color = color;
-        this.precioUnitario = precioUnitario;
+        this.talla = variante.getTalla();
+        this.color = variante.getColorHex();
+        this.precioUnitario = variante.getPrecio() != null
+                ? variante.getPrecio()
+                : variante.getProducto().getPrecio();
     }
 
     public Long getId() {
@@ -71,6 +78,14 @@ public class CarritoDetalle {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    public ProductoVariante getVariante() {
+        return variante;
+    }
+
+    public void setVariante(ProductoVariante variante) {
+        this.variante = variante;
     }
 
     public Integer getCantidad() {

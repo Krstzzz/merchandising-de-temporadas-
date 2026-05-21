@@ -30,6 +30,10 @@ public class PedidoDetalle {
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
+    @ManyToOne
+    @JoinColumn(name = "variante_id")
+    private ProductoVariante variante;
+
     @Column(nullable = false)
     private Integer cantidad;
 
@@ -48,42 +52,81 @@ public class PedidoDetalle {
     public PedidoDetalle() {
     }
 
-    public PedidoDetalle(Producto producto, Integer cantidad, String talla, String color, BigDecimal precioUnitario) {
-        this.producto = producto;
+    public PedidoDetalle(ProductoVariante variante, Integer cantidad, BigDecimal precioUnitario) {
+        this.variante = variante;
+        this.producto = variante.getProducto();
         this.cantidad = cantidad;
-        this.talla = talla;
-        this.color = color;
+        this.talla = variante.getTalla();
+        this.color = variante.getColorHex();
         this.precioUnitario = precioUnitario;
         this.subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidad));
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Pedido getPedido() { return pedido; }
+    public Pedido getPedido() {
+        return pedido;
+    }
 
-    public void setPedido(Pedido pedido) { this.pedido = pedido; }
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
 
-    public Producto getProducto() { return producto; }
+    public ProductoVariante getVariante() {
+        return variante;
+    }
 
-    public void setProducto(Producto producto) { this.producto = producto; }
+    public void setVariante(ProductoVariante variante) {
+        this.variante = variante;
+    }
 
-    public Integer getCantidad() { return cantidad; }
+    public Producto getProducto() {
+        return producto;
+    }
 
-    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
 
-    public String getTalla() { return talla; }
+    public Integer getCantidad() {
+        return cantidad;
+    }
 
-    public void setTalla(String talla) { this.talla = talla; }
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
+    }
 
-    public String getColor() { return color; }
+    public String getTalla() {
+        return talla;
+    }
 
-    public void setColor(String color) { this.color = color; }
+    public void setTalla(String talla) {
+        this.talla = talla;
+    }
 
-    public BigDecimal getPrecioUnitario() { return precioUnitario; }
+    public String getColor() {
+        return color;
+    }
 
-    public void setPrecioUnitario(BigDecimal precioUnitario) { this.precioUnitario = precioUnitario; }
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-    public BigDecimal getSubtotal() { return subtotal; }
+    public BigDecimal getPrecioUnitario() {
+        return precioUnitario;
+    }
 
-    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
+    public void setPrecioUnitario(BigDecimal precioUnitario) {
+        this.precioUnitario = precioUnitario;
+    }
+
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
 }

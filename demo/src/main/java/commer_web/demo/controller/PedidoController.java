@@ -22,10 +22,11 @@ import commer_web.demo.model.MetodoPago;
 import commer_web.demo.model.Pago;
 import commer_web.demo.model.Pedido;
 import commer_web.demo.model.PedidoDetalle;
-import commer_web.demo.model.Producto;
+import commer_web.demo.model.ProductoVariante;
 import commer_web.demo.repository.CarritoRepository;
 import commer_web.demo.repository.PedidoRepository;
 import commer_web.demo.repository.ProductoRepository;
+import commer_web.demo.repository.ProductoVarianteRepository;
 import jakarta.transaction.Transactional;
 
 @RestController
@@ -35,15 +36,18 @@ public class PedidoController {
 
     private final PedidoRepository pedidoRepository;
     private final CarritoRepository carritoRepository;
+    private final ProductoVarianteRepository varianteRepository;
     private final ProductoRepository productoRepository;
 
     public PedidoController(
             PedidoRepository pedidoRepository,
             CarritoRepository carritoRepository,
+            ProductoVarianteRepository varianteRepository,
             ProductoRepository productoRepository
     ) {
         this.pedidoRepository = pedidoRepository;
         this.carritoRepository = carritoRepository;
+        this.varianteRepository = varianteRepository;
         this.productoRepository = productoRepository;
     }
 
@@ -84,25 +88,29 @@ public class PedidoController {
         BigDecimal total = BigDecimal.ZERO;
 
         for (CarritoDetalle item : carrito.getDetalles()) {
-            Producto producto = item.getProducto();
+            ProductoVariante variante = item.getVariante();
 
-            if (producto.getStock() < item.getCantidad()) {
-                throw new RuntimeException("Stock insuficiente para: " + producto.getNombre());
+            if (variante == null) {
+                throw new RuntimeException("El detalle del carrito no tiene variante asociada");
+            }
+
+            if (variante.getStock() < item.getCantidad()) {
+                throw new RuntimeException("Stock insuficiente para: " + variante.getProducto().getNombre());
             }
 
             PedidoDetalle detalle = new PedidoDetalle(
-                    producto,
+                    variante,
                     item.getCantidad(),
-                    item.getTalla(),
-                    item.getColor(),
                     item.getPrecioUnitario()
             );
 
             pedido.agregarDetalle(detalle);
             total = total.add(detalle.getSubtotal());
 
-            producto.setStock(producto.getStock() - item.getCantidad());
-            productoRepository.save(producto);
+            variante.setStock(variante.getStock() - item.getCantidad());
+            varianteRepository.save(variante);
+
+            actualizarStockTotalProducto(variante.getProducto().getId());
         }
 
         pedido.setTotal(total);
@@ -135,5 +143,17 @@ public class PedidoController {
 
         pedido.setEstado(estado);
         return pedidoRepository.save(pedido);
+    }
+
+    private void actualizarStockTotalProducto(Long productoId) {
+        int stockTotal = varianteRepository.findByProductoId(productoId)
+                .stream()
+                .mapToInt(ProductoVariante::getStock)
+                .sum();
+
+        productoRepository.findById(productoId).ifPresent(producto -> {
+            producto.setStock(stockTotal);
+            productoRepository.save(producto);
+        });
     }
 }

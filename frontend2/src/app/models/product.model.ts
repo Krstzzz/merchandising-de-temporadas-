@@ -181,3 +181,29 @@ export interface CreateCategoriaRequest {
   nombre: string;
   descripcion: string;
 }
+
+export interface BackendCliente {
+  id: number;
+  nombre: string;
+  apellido: string;
+  email: string;
+}
+
+export interface BackendCarritoDetalle {
+  id: number;
+  producto: BackendProduct;
+  variante: BackendProductoVariante;
+  cantidad: number;
+  talla: string;
+  color: string;
+  precioUnitario: number;
+}
+
+export interface BackendCarrito {
+  id: number;
+  cliente: BackendCliente;
+  activo: boolean;
+  fechaCreacion: string;
+  detalles: BackendCarritoDetalle[];
+}
+

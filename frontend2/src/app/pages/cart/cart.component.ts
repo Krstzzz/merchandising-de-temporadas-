@@ -10,4 +10,13 @@ import { CartService } from '../../services/cart.service';
 })
 export class CartComponent {
   readonly cart = inject(CartService);
+  readonly clienteId = 1;
+
+  constructor() {
+    this.cart.loadBackendCart(this.clienteId);
+  }
+
+  remove(detalleId: number): void {
+    this.cart.removeBackendDetail(detalleId, this.clienteId);
+  }
 }
