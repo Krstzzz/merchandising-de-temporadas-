@@ -4,6 +4,7 @@ import { CartService } from "../../services/cart.service";
 import { OrdersService } from "../../services/orders.service";
 import { ToastService } from "../../services/toast.service";
 import { FormsModule } from "@angular/forms";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
   selector: "app-checkout",
@@ -16,8 +17,9 @@ export class CheckoutComponent {
   readonly orders = inject(OrdersService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
 
-  readonly clienteId = 1;
+  readonly clienteId = this.auth.getClientId();
   readonly payment = signal<"TARJETA" | "CONTACTO">("TARJETA");
 
   shippingForm = {
@@ -25,7 +27,9 @@ export class CheckoutComponent {
   };
 
   constructor() {
-    this.cart.loadBackendCart(this.clienteId);
+    if (this.clienteId) {
+      this.cart.loadBackendCart(this.clienteId);
+    }
   }
 
   confirm(): void {
@@ -34,12 +38,35 @@ export class CheckoutComponent {
       return;
     }
 
-    this.orders.createFromCart(this.clienteId, {
-      direccionEnvio: this.shippingForm.direccionEnvio,
-      metodoPago: this.payment(),
-    });
+    if (
+      !this.cart.backendCart() ||
+      this.cart.backendCart()?.detalles.length === 0
+    ) {
+      this.toast.show("Tu carrito está vacío");
+      return;
+    }
 
-    this.toast.show("Pedido confirmado");
-    this.router.navigateByUrl("/confirm");
+    if (!this.clienteId) {
+      this.toast.show("Inicia sesión para finalizar compra");
+      return;
+    }
+
+    this.orders
+      .createFromCart(this.clienteId, {
+        direccionEnvio: this.shippingForm.direccionEnvio,
+        metodoPago: this.payment(),
+      })
+      .subscribe({
+        next: () => {
+          this.cart.backendCart.set(null);
+          this.cart.clear();
+          this.toast.show("Pedido confirmado");
+          this.router.navigateByUrl("/confirm");
+        },
+        error: (error) => {
+          console.error("Error creando pedido", error);
+          this.toast.show("No se pudo confirmar el pedido");
+        },
+      });
   }
 }

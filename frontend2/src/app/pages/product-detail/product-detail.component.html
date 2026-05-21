@@ -10,9 +10,9 @@
 <section class="detail-grid">
   <div class="detail-img">
     @if (selectedImageUrl()) {
-    <img [src]="'http://localhost:8080' + selectedImageUrl()" [alt]="product.name">
+      <img [src]="'http://localhost:8080' + selectedImageUrl()" [alt]="product.name">
     } @else {
-    <span>{{ product.emoji }}</span>
+      <span>{{ product.emoji }}</span>
     }
   </div>
 
@@ -26,19 +26,26 @@
     <div class="variant-label">Color</div>
     <div class="color-grid">
       @for (item of availableColors(); track item) {
-      <button class="color-swatch" [class.active]="color() === item" [style.background]="item"
-        [title]="item" (click)="color.set(item)"></button>
+        <button
+          class="color-swatch"
+          [class.active]="color() === item"
+          [style.background]="item"
+          [title]="item"
+          (click)="color.set(item)">
+        </button>
       } @empty {
-      <span class="variant-empty">Sin colores disponibles</span>
+        <span class="variant-empty">Sin colores disponibles</span>
       }
     </div>
 
     <div class="variant-label">Talla</div>
     <div class="size-grid">
       @for (item of availableSizes(); track item) {
-      <button class="size-btn" [class.active]="size() === item" (click)="size.set(item)">{{ item }}</button>
+        <button class="size-btn" [class.active]="size() === item" (click)="size.set(item)">
+          {{ item }}
+        </button>
       } @empty {
-      <span class="variant-empty">Sin tallas para este color</span>
+        <span class="variant-empty">Sin tallas para este color</span>
       }
     </div>
 
@@ -49,7 +56,10 @@
       <button class="qty-btn" (click)="changeQty(1)">+</button>
     </div>
 
-    <button class="btn-red" [disabled]="!selectedVariant()" (click)="add()">Agregar al carrito</button>
+    <button class="btn-red" [disabled]="!selectedVariant() || selectedStock() <= 0" (click)="add()">
+      Agregar al carrito
+    </button>
+
     <a class="btn-outline cart-link" routerLink="/cart">Ver carrito →</a>
   </div>
 </section>

@@ -1,17 +1,38 @@
 <section class="confirm-screen">
-  <div class="confirm-icon">✓</div>
-  <div class="order-id">Pedido #TS-2025-0847</div>
-  <h2>¡Pedido registrado!</h2>
-  <p>Tu pedido ha sido recibido con éxito. Recibirás una confirmación en tu correo electrónico.</p>
-  <div class="confirm-order">
-    @for (item of cart.items(); track $index) {
-      <div class="confirm-row"><span>{{ item.name }} (×{{ item.qty }}, T:{{ item.size }})</span><span>S/. {{ item.price * item.qty }}</span></div>
-    }
-    <div class="confirm-row"><span>Envío</span><span>{{ cart.shipping() === 0 ? 'Gratis' : 'S/. 10' }}</span></div>
-    <div class="confirm-row"><span>Total pagado</span><span>S/. {{ cart.total() }}</span></div>
-  </div>
-  <div class="confirm-actions">
-    <a class="btn-primary" routerLink="/" (click)="cart.clear()">Volver al inicio</a>
-    <a class="btn-outline" routerLink="/catalog">Seguir comprando</a>
-  </div>
+  @if (orders.lastOrder(); as order) {
+    <div class="confirm-icon">✓</div>
+    <div class="order-id">Pedido #TS-{{ order.id }}</div>
+    <h2>¡Pedido registrado!</h2>
+    <p>Tu pedido ha sido recibido con éxito. Recibirás una confirmación en tu correo electrónico.</p>
+
+    <div class="confirm-order">
+      <div class="confirm-row">
+        <span>Estado</span>
+        <span>{{ order.estado }}</span>
+      </div>
+      <div class="confirm-row">
+        <span>Dirección</span>
+        <span>{{ order.direccionEnvio }}</span>
+      </div>
+      <div class="confirm-row">
+        <span>Total pagado</span>
+        <span>S/. {{ order.total }}</span>
+      </div>
+    </div>
+
+    <div class="confirm-actions">
+      <a class="btn-primary" routerLink="/">Volver al inicio</a>
+      <a class="btn-outline" routerLink="/catalog">Seguir comprando</a>
+    </div>
+  } @else {
+    <div class="confirm-icon">!</div>
+    <h2>No hay pedido reciente</h2>
+    <p>No encontramos un pedido confirmado en esta sesión.</p>
+
+    <div class="confirm-actions">
+      <a class="btn-primary" routerLink="/catalog">Ir al catálogo</a>
+      <a class="btn-outline" routerLink="/">Volver al inicio</a>
+    </div>
+  }
 </section>
+

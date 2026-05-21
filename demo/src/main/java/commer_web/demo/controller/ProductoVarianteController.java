@@ -51,15 +51,37 @@ public class ProductoVarianteController {
         variante.setPrecio(request.getPrecio());
         variante.setSku(request.getSku());
 
-        return varianteRepository.save(variante);
+        ProductoVariante varianteGuardada = varianteRepository.save(variante);
+        actualizarStockTotalProducto(producto.getId());
+
+        return varianteGuardada;
     }
 
     @DeleteMapping("/{id}")
     public void eliminarVariante(@PathVariable Long id) {
+        ProductoVariante variante = varianteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Variante no encontrada"));
+
+        Long productoId = variante.getProducto().getId();
+
         varianteRepository.deleteById(id);
+        actualizarStockTotalProducto(productoId);
+    }
+
+    private void actualizarStockTotalProducto(Long productoId) {
+        int stockTotal = varianteRepository.findByProductoId(productoId)
+                .stream()
+                .mapToInt(ProductoVariante::getStock)
+                .sum();
+
+        productoRepository.findById(productoId).ifPresent(producto -> {
+            producto.setStock(stockTotal);
+            productoRepository.save(producto);
+        });
     }
 
     public static class VarianteRequest {
+
         private Long productoId;
         private String colorHex;
         private String talla;

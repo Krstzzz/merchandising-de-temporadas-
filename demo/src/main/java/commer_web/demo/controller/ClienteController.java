@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import commer_web.demo.dto.LoginRequest;
 import commer_web.demo.model.Cliente;
 import commer_web.demo.repository.ClienteRepository;
 
@@ -62,4 +63,21 @@ public class ClienteController {
     public void eliminarCliente(@PathVariable Long id) {
         clienteRepository.deleteById(id);
     }
+
+    @PostMapping("/login")
+    public Cliente login(@RequestBody LoginRequest request) {
+        Cliente cliente = clienteRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        if (!cliente.getPassword().equals(request.getPassword())) {
+            throw new RuntimeException("Contraseña incorrecta");
+        }
+
+        if (cliente.getActivo() != null && !cliente.getActivo()) {
+            throw new RuntimeException("Cliente inactivo");
+        }
+
+        return cliente;
+    }
+
 }

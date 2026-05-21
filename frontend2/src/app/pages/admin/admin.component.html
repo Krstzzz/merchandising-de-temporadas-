@@ -133,9 +133,11 @@
         <label>
           Nueva categoría
           <div class="inline-row">
-            <input name="newCategoryName" [(ngModel)]="newCategoryName" placeholder="Ej: Eventos">
-            <input name="newCategoryDescription" [(ngModel)]="newCategoryDescription" placeholder="Descripción">
-            <button type="button" class="act-btn act-edit" (click)="createCategory()">Agregar</button>
+            <input name="newCategoryName" [(ngModel)]="newCategoryName" placeholder="Ej: Eventos" />
+            <input name="newCategoryDescription" [(ngModel)]="newCategoryDescription" placeholder="Descripción" />
+            <button type="button" class="act-btn act-edit" (click)="createCategory()">
+              Agregar
+            </button>
           </div>
         </label>
 
@@ -289,13 +291,14 @@
     }
 
     @if (tab() === "orders") {
+    @if (tab() === 'orders') {
     <div class="admin-header">
       <div class="admin-title">Pedidos</div>
       <div class="filter-row">
-        <button class="filter-btn active">Todos (47)</button><button class="filter-btn">Pendientes</button><button
-          class="filter-btn">En camino</button>
+        <button class="filter-btn active">Todos ({{ ordersService.orders().length }})</button>
       </div>
     </div>
+
     <div class="data-table">
       <table>
         <thead>
@@ -307,49 +310,44 @@
             <th>Total</th>
             <th>Pago</th>
             <th>Estado</th>
-            <th>Acciones</th>
+            <th>Fecha</th>
           </tr>
         </thead>
         <tbody>
+          @for (order of ordersService.orders(); track order.id) {
           <tr>
-            <td>#847</td>
-            <td>Ana Torres</td>
-            <td>ana@mail.com</td>
-            <td>Polo Naruto × 2</td>
-            <td>S/.90</td>
-            <td>Tarjeta</td>
-            <td><span class="badge badge-green">Entregado</span></td>
-            <td class="action-btns">
-              <button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.cliente?.nombre }} {{ order.cliente?.apellido }}</td>
+            <td>{{ order.cliente?.email }}</td>
+            <td>
+              @for (detail of order.detalles; track detail.id) {
+              <div>{{ detail.producto.nombre }} × {{ detail.cantidad }}</div>
+              }
             </td>
+            <td>S/. {{ order.total }}</td>
+            <td>
+              {{ order.pago?.metodoPago }}
+              <span class="badge badge-blue">{{ order.pago?.estadoPago }}</span>
+            </td>
+            <td>
+              <select class="status-select" [value]="order.estado" (change)="changeOrderStatus(order.id, $event)">
+                @for (estado of estadosPedido; track estado) {
+                <option [value]="estado">{{ estado }}</option>
+                }
+              </select>
+            </td>
+            <td>{{ order.fechaPedido }}</td>
           </tr>
+          } @empty {
           <tr>
-            <td>#846</td>
-            <td>Carlos Ríos</td>
-            <td>carlos@mail.com</td>
-            <td>Hoodie Dragon Ball</td>
-            <td>S/.85</td>
-            <td>Contacto</td>
-            <td><span class="badge badge-orange">En camino</span></td>
-            <td class="action-btns">
-              <button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button>
-            </td>
+            <td colspan="8">No hay pedidos registrados.</td>
           </tr>
-          <tr>
-            <td>#845</td>
-            <td>Lucía Mamani</td>
-            <td>lucia@mail.com</td>
-            <td>Polo Valorant × 3</td>
-            <td>S/.135</td>
-            <td>Tarjeta</td>
-            <td><span class="badge badge-blue">Procesando</span></td>
-            <td class="action-btns">
-              <button class="act-btn act-edit">Ver</button><button class="act-btn act-edit">Editar</button>
-            </td>
-          </tr>
+          }
         </tbody>
       </table>
     </div>
+    }
+
     }
 
     @if (tab() === "users") {

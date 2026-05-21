@@ -10,6 +10,7 @@ import { ProductVariantsService } from "../../services/product-variants.service"
 import { CategoriesService } from "../../services/categories.service";
 import { ProductsService } from "../../services/products.service";
 import { ToastService } from "../../services/toast.service";
+import { EstadoPedido, OrdersService } from "../../services/orders.service";
 
 type AdminTab = "dashboard" | "products" | "orders" | "users";
 
@@ -27,6 +28,14 @@ export class AdminComponent {
   private readonly toast = inject(ToastService);
   readonly tab = signal<AdminTab>("dashboard");
   readonly showProductForm = signal(false);
+  readonly ordersService = inject(OrdersService);
+  readonly estadosPedido: EstadoPedido[] = [
+    "PENDIENTE",
+    "PROCESANDO",
+    "EN_CAMINO",
+    "ENTREGADO",
+    "CANCELADO",
+  ];
   selectedImage: File | null = null;
   newCategoryName = "";
   newCategoryDescription = "";
@@ -57,6 +66,7 @@ export class AdminComponent {
   constructor() {
     this.productsService.loadProducts();
     this.categoriesService.loadCategories();
+    this.ordersService.loadOrders();
   }
 
   notify(message: string): void {
@@ -80,6 +90,12 @@ export class AdminComponent {
   onImageSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.selectedImage = input.files?.[0] ?? null;
+  }
+
+  changeOrderStatus(orderId: number, event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.ordersService.updateStatus(orderId, select.value as EstadoPedido);
+    this.toast.show("Estado actualizado");
   }
 
   saveProduct(): void {

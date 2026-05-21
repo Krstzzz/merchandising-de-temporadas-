@@ -1,14 +1,12 @@
 import { Component, computed, effect, inject, signal } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
-import {
-  BackendProductoImagen,
-  BackendProductoVariante,
-} from "../../models/product.model";
+import { BackendProductoImagen, BackendProductoVariante } from "../../models/product.model";
 import { CartService } from "../../services/cart.service";
 import { ProductImagesService } from "../../services/product-images.service";
 import { ProductVariantsService } from "../../services/product-variants.service";
 import { ProductsService } from "../../services/products.service";
 import { ToastService } from "../../services/toast.service";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
   selector: "app-product-detail",
@@ -23,6 +21,7 @@ export class ProductDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly cart = inject(CartService);
   private readonly toast = inject(ToastService);
+  private readonly auth = inject(AuthService);
 
   readonly qty = signal(1);
   readonly product = computed(() =>
@@ -50,24 +49,16 @@ export class ProductDetailComponent {
 
   readonly selectedVariant = computed(() => {
     return this.variants().find(
-      (variant) =>
-        variant.colorHex === this.color() && variant.talla === this.size(),
+      (variant) => variant.colorHex === this.color() && variant.talla === this.size(),
     );
   });
 
   readonly selectedStock = computed(() => this.selectedVariant()?.stock ?? 0);
 
   readonly selectedImageUrl = computed(() => {
-    const colorImage = this.images().find(
-      (image) => image.colorHex === this.color(),
-    );
+    const colorImage = this.images().find((image) => image.colorHex === this.color());
     const principalImage = this.images().find((image) => image.principal);
-    return (
-      colorImage?.imagenUrl ??
-      principalImage?.imagenUrl ??
-      this.product()?.imageUrl ??
-      null
-    );
+    return colorImage?.imagenUrl ?? principalImage?.imagenUrl ?? this.product()?.imageUrl ?? null;
   });
 
   constructor() {
@@ -109,13 +100,25 @@ export class ProductDetailComponent {
       return;
     }
 
+    if (variant.stock <= 0) {
+      this.toast.show("Esta variante está agotada");
+      return;
+    }
+
     if (this.qty() > variant.stock) {
       this.toast.show("No hay stock suficiente para esa variante");
       return;
     }
 
+    const clienteId = this.auth.getClientId();
+
+    if (!clienteId) {
+      this.toast.show("Inicia sesión para agregar al carrito");
+      return;
+    }
+
     this.cart.addBackend({
-      clienteId: 1,
+      clienteId,
       varianteId: variant.id,
       cantidad: this.qty(),
     });

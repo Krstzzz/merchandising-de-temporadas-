@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CartService } from '../../services/cart.service';
+import { OrdersService } from '../../services/orders.service';
 
 @Component({
   selector: 'app-confirm',
@@ -9,5 +9,5 @@ import { CartService } from '../../services/cart.service';
   styleUrl: './confirm.component.css'
 })
 export class ConfirmComponent {
-  readonly cart = inject(CartService);
+  readonly orders = inject(OrdersService);
 }
