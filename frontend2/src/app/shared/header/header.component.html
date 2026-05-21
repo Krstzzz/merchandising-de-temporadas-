@@ -1,6 +1,7 @@
 <header>
   <div class="header-inner">
     <a class="logo" routerLink="/">Trend<span>Store</span></a>
+
     <nav>
       <div class="nav-item">
         Animes
@@ -8,37 +9,60 @@
           <div class="mega-col">
             <h4>Populares</h4>
             <a routerLink="/catalog" [queryParams]="{ q: 'Naruto' }">Naruto</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'One Piece' }">One Piece</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Attack on Titan' }">Attack on Titan</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Dragon Ball' }">Dragon Ball</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Demon Slayer' }">Demon Slayer</a>
+            <a routerLink="/catalog" [queryParams]="{ q: 'One Piece' }"
+              >One Piece</a
+            >
+            <a routerLink="/catalog" [queryParams]="{ q: 'Attack on Titan' }"
+              >Attack on Titan</a
+            >
+            <a routerLink="/catalog" [queryParams]="{ q: 'Dragon Ball' }"
+              >Dragon Ball</a
+            >
+            <a routerLink="/catalog" [queryParams]="{ q: 'Demon Slayer' }"
+              >Demon Slayer</a
+            >
           </div>
         </div>
       </div>
+
       <div class="nav-item">
         Videojuegos
         <div class="mega-menu">
           <div class="mega-col">
             <h4>Top Juegos</h4>
             <a routerLink="/catalog" [queryParams]="{ q: 'Dota 2' }">Dota 2</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Left 4 Dead' }">Left 4 Dead</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Resident Evil' }">Resident Evil</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Valorant' }">Valorant</a>
+            <a routerLink="/catalog" [queryParams]="{ q: 'Left 4 Dead' }"
+              >Left 4 Dead</a
+            >
+            <a routerLink="/catalog" [queryParams]="{ q: 'Resident Evil' }"
+              >Resident Evil</a
+            >
+            <a routerLink="/catalog" [queryParams]="{ q: 'Valorant' }"
+              >Valorant</a
+            >
           </div>
         </div>
       </div>
+
       <div class="nav-item">
         Películas/Series
         <div class="mega-menu">
           <div class="mega-col">
             <h4>Franquicias</h4>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Breaking Bad' }">Breaking Bad</a>
+            <a routerLink="/catalog" [queryParams]="{ q: 'Breaking Bad' }"
+              >Breaking Bad</a
+            >
             <a routerLink="/catalog" [queryParams]="{ q: 'Marvel' }">Marvel</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'DC Comics' }">DC Comics</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Star Wars' }">Star Wars</a>
+            <a routerLink="/catalog" [queryParams]="{ q: 'DC Comics' }"
+              >DC Comics</a
+            >
+            <a routerLink="/catalog" [queryParams]="{ q: 'Star Wars' }"
+              >Star Wars</a
+            >
           </div>
         </div>
       </div>
+
       <div class="nav-item">
         Música
         <div class="mega-menu">
@@ -46,21 +70,37 @@
             <h4>Géneros</h4>
             <a routerLink="/catalog" [queryParams]="{ q: 'Rock' }">Rock</a>
             <a routerLink="/catalog" [queryParams]="{ q: 'K-pop' }">K-pop</a>
-            <a routerLink="/catalog" [queryParams]="{ q: 'Rap/Hip-hop' }">Rap / Hip-hop</a>
+            <a routerLink="/catalog" [queryParams]="{ q: 'Rap/Hip-hop' }"
+              >Rap / Hip-hop</a
+            >
             <a routerLink="/catalog" [queryParams]="{ q: 'Metal' }">Metal</a>
           </div>
         </div>
       </div>
     </nav>
+
     <div class="search-bar">
-      <span>🔍</span>
-      <input type="text" placeholder="Buscar productos...">
+      <span>&#128269;</span>
+      <input type="text" placeholder="Buscar productos..." />
     </div>
+
     <div class="header-actions">
-      <a class="icon-btn" routerLink="/login" title="Mi cuenta">👤</a>
+      <a
+        class="icon-btn account-btn"
+        [routerLink]="auth.currentClient() ? '/profile' : '/login'"
+        [title]="auth.currentClient() ? 'Mi perfil' : 'Iniciar sesión'"
+      >
+        <span>&#128100;</span>
+        @if (auth.currentClient()) {
+          <span class="account-label">{{ auth.currentClient()?.nombre }}</span>
+        }
+      </a>
+
       <a class="icon-btn" routerLink="/cart" title="Carrito">
-        🛒
-        <span class="cart-badge" [class.show]="cart.count() > 0">{{ cart.count() }}</span>
+        &#128722;
+        <span class="cart-badge" [class.show]="cart.count() > 0">{{
+          cart.count()
+        }}</span>
       </a>
     </div>
   </div>

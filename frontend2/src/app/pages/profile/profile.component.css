@@ -11,6 +11,12 @@
   gap: 24px;
 }
 
+.profile-stack {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+}
+
 .profile-panel {
   background: var(--white);
   border: 1px solid var(--gray-200);

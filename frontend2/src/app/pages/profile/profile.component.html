@@ -1,63 +1,121 @@
 <section class="profile-page">
   <div class="page-title">
     <h2>Mi cuenta</h2>
-    <p>Gestiona tus datos y revisa tus pedidos</p>
+    <p>Gestiona tus datos personales, dirección, seguridad e historial de pedidos</p>
   </div>
 
   @if (profileForm) {
   <div class="profile-layout">
-    <div class="profile-panel">
-      <div class="panel-header">
-        <h3>Mis datos</h3>
-        <button class="btn-outline small" type="button" (click)="logout()">Cerrar sesión</button>
-      </div>
+    <div class="profile-stack">
+      <div class="profile-panel">
+        <div class="panel-header">
+          <h3>Datos personales</h3>
+          <button class="btn-outline small" type="button" (click)="logout()">Cerrar sesión</button>
+        </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Nombre</label>
-          <input class="form-input" [(ngModel)]="profileForm.nombre" name="nombre">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre</label>
+            <input class="form-input" [(ngModel)]="profileForm.nombre" name="nombre" placeholder="Tu nombre">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Apellido</label>
+            <input class="form-input" [(ngModel)]="profileForm.apellido" name="apellido" placeholder="Tu apellido">
+          </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Apellido</label>
-          <input class="form-input" [(ngModel)]="profileForm.apellido" name="apellido">
+          <label class="form-label">Correo electrónico</label>
+          <input class="form-input" [(ngModel)]="profileForm.email" name="email" type="email"
+            placeholder="tu@email.com">
         </div>
+
+        <div class="form-group">
+          <label class="form-label">Número de celular</label>
+          <input class="form-input" [(ngModel)]="profileForm.telefono" name="telefono" placeholder="+51 999 999 999">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dirección / domicilio</label>
+          <input class="form-input" [(ngModel)]="profileForm.direccion" name="direccion"
+            placeholder="Av. Ejemplo 123, Lima">
+        </div>
+
+        <button class="btn-primary" type="button" (click)="saveProfile()">
+          Guardar cambios
+        </button>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Correo</label>
-        <input class="form-input" [(ngModel)]="profileForm.email" name="email" type="email">
-      </div>
+      <div class="profile-panel">
+        <h3>Cambiar contraseña</h3>
 
-      <div class="form-group">
-        <label class="form-label">Teléfono</label>
-        <input class="form-input" [(ngModel)]="profileForm.telefono" name="telefono">
-      </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña actual</label>
+          <input class="form-input" type="password" [(ngModel)]="passwordForm.passwordActual" name="passwordActual"
+            placeholder="Ingresa tu contraseña actual">
+        </div>
 
-      <div class="form-group">
-        <label class="form-label">Dirección</label>
-        <input class="form-input" [(ngModel)]="profileForm.direccion" name="direccion">
-      </div>
+        <div class="form-group">
+          <label class="form-label">Nueva contraseña</label>
+          <input class="form-input" type="password" [(ngModel)]="passwordForm.passwordNuevo" name="passwordNuevo"
+            placeholder="Mínimo 8 caracteres">
+        </div>
 
-      <button class="btn-primary" type="button" (click)="saveProfile()">Guardar cambios</button>
+        <div class="form-group">
+          <label class="form-label">Confirmar nueva contraseña</label>
+          <input class="form-input" type="password" [(ngModel)]="passwordForm.confirmarPassword"
+            name="confirmarPassword" placeholder="Repite la nueva contraseña">
+        </div>
+
+        <button class="btn-primary" type="button" (click)="changePassword()">
+          Actualizar contraseña
+        </button>
+      </div>
     </div>
 
     <div class="profile-panel">
-      <h3>Mis pedidos</h3>
+      <h3>Historial de pedidos</h3>
 
       @for (order of orders.orders(); track order.id) {
       <div class="order-card">
-        <div>
-          <strong>Pedido #TS-{{ order.id }}</strong>
-          <p>{{ order.fechaPedido }}</p>
+        <div class="order-top">
+          <div>
+            <strong>Pedido #TS-{{ order.id }}</strong>
+            <p>{{ formatDate(order.fechaPedido) }}</p>
+          </div>
+
+          <div>
+            <span class="status" [class]="order.estado.toLowerCase()">
+              {{ statusLabel(order.estado) }}
+            </span>
+            <strong>S/. {{ order.total }}</strong>
+          </div>
         </div>
-        <div>
-          <span class="status">{{ order.estado }}</span>
-          <strong>S/. {{ order.total }}</strong>
+
+        @if (order.detalles?.length) {
+        <div class="order-items">
+          @for (detail of order.detalles; track detail.id) {
+          <div class="order-item">
+            <span>{{ detail.producto.nombre }}</span>
+            <span>x{{ detail.cantidad }} - {{ detail.talla }} - S/. {{ detail.subtotal }}</span>
+          </div>
+          }
+        </div>
+        }
+
+        <div class="order-footer">
+          <span>
+            {{ order.pago?.metodoPago === 'CONTACTO' ? 'Pago por contacto' : 'Pago con tarjeta' }}
+          </span>
+          <span>{{ order.direccionEnvio }}</span>
         </div>
       </div>
       } @empty {
-      <p class="empty">Todavía no tienes pedidos.</p>
+      <div class="empty">
+        <p>Todavía no tienes pedidos.</p>
+        <a class="btn-outline small" routerLink="/catalog">Explorar catálogo</a>
+      </div>
       }
     </div>
   </div>

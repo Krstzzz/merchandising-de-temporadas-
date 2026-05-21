@@ -28,6 +28,11 @@ export interface RegisterRequest {
   direccion?: string;
 }
 
+export interface ChangePasswordRequest {
+  passwordActual: string;
+  passwordNuevo: string;
+}
+
 @Injectable({ providedIn: "root" })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -58,10 +63,21 @@ export class AuthService {
   }
 
   updateProfile(clientId: number, data: Cliente): Observable<Cliente> {
-  return this.http.put<Cliente>(`${this.apiUrl}/${clientId}`, data).pipe(
-    tap((client) => this.setClient(client)),
-  );
-}
+    return this.http.put<Cliente>(`${this.apiUrl}/${clientId}`, data).pipe(
+      tap((client) => this.setClient(client)),
+    );
+  }
+
+  changePassword(
+    clientId: number,
+    request: ChangePasswordRequest,
+  ): Observable<Cliente> {
+    return this.http
+      .put<Cliente>(`${this.apiUrl}/${clientId}/password`, request)
+      .pipe(
+        tap((client) => this.setClient(client)),
+      );
+  }
 
   private setClient(client: Cliente): void {
     localStorage.setItem(this.storageKey, JSON.stringify(client));

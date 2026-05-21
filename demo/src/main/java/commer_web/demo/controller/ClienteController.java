@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import commer_web.demo.dto.CambiarPasswordRequest;
 import commer_web.demo.dto.LoginRequest;
 import commer_web.demo.model.Cliente;
 import commer_web.demo.repository.ClienteRepository;
@@ -43,27 +44,6 @@ public class ClienteController {
         return clienteRepository.save(cliente);
     }
 
-    @PutMapping("/{id}")
-    public Cliente actualizarCliente(@PathVariable Long id, @RequestBody Cliente datos) {
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-
-        cliente.setNombre(datos.getNombre());
-        cliente.setApellido(datos.getApellido());
-        cliente.setEmail(datos.getEmail());
-        cliente.setPassword(datos.getPassword());
-        cliente.setTelefono(datos.getTelefono());
-        cliente.setDireccion(datos.getDireccion());
-        cliente.setActivo(datos.getActivo());
-
-        return clienteRepository.save(cliente);
-    }
-
-    @DeleteMapping("/{id}")
-    public void eliminarCliente(@PathVariable Long id) {
-        clienteRepository.deleteById(id);
-    }
-
     @PostMapping("/login")
     public Cliente login(@RequestBody LoginRequest request) {
         Cliente cliente = clienteRepository.findByEmail(request.getEmail())
@@ -80,4 +60,50 @@ public class ClienteController {
         return cliente;
     }
 
+    @PutMapping("/{id}")
+    public Cliente actualizarCliente(@PathVariable Long id, @RequestBody Cliente datos) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        cliente.setNombre(datos.getNombre());
+        cliente.setApellido(datos.getApellido());
+        cliente.setEmail(datos.getEmail());
+        cliente.setTelefono(datos.getTelefono());
+        cliente.setDireccion(datos.getDireccion());
+
+        if (datos.getActivo() != null) {
+            cliente.setActivo(datos.getActivo());
+        }
+
+        return clienteRepository.save(cliente);
+    }
+
+    @PutMapping("/{id}/password")
+    public Cliente cambiarPassword(
+            @PathVariable Long id,
+            @RequestBody CambiarPasswordRequest request
+    ) {
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+
+        if (request.getPasswordActual() == null || request.getPasswordActual().isBlank()) {
+            throw new RuntimeException("Ingresa tu contraseña actual");
+        }
+
+        if (!cliente.getPassword().equals(request.getPasswordActual())) {
+            throw new RuntimeException("La contraseña actual no es correcta");
+        }
+
+        if (request.getPasswordNuevo() == null || request.getPasswordNuevo().length() < 8) {
+            throw new RuntimeException("La nueva contraseña debe tener mínimo 8 caracteres");
+        }
+
+        cliente.setPassword(request.getPasswordNuevo());
+        return clienteRepository.save(cliente);
+    }
+
+    @DeleteMapping("/{id}")
+    public void eliminarCliente(@PathVariable Long id) {
+        clienteRepository.deleteById(id);
+    }
 }
