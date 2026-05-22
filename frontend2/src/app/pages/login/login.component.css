@@ -11,3 +11,36 @@
 .auth-switch a { color: var(--black); font-weight: 600; cursor: pointer; text-decoration: underline; }
 .admin-link { margin-top: 8px; }
 .admin-link a { color: var(--red); }
+
+.text-link {
+  display: block;
+  margin: 14px auto 0;
+  border: none;
+  background: none;
+  color: var(--black);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+.mail-notice { margin: 14px 0; padding: 12px 14px; background: #e8f5ee; color: #1a5c1a; border-radius: 8px; font-size: 13px; }
+.password-field { position: relative; }
+.password-field .form-input { padding-right: 78px; }
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: none;
+  background: var(--gray-100);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.password-toggle:hover { background: var(--gray-200); }

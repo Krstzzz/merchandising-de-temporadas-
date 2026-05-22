@@ -2,24 +2,105 @@
   <div class="auth-logo">
     <a class="logo" routerLink="/">Trend<span>Store</span></a>
   </div>
+
   <div class="auth-card">
-    <h2>Bienvenido de vuelta</h2>
-    <p class="sub">Inicia sesión en tu cuenta</p>
-    <div class="form-group">
-      <label class="form-label">Correo electrónico</label>
-      <input class="form-input" type="email" [(ngModel)]="loginForm.email" name="email" placeholder="tu@email.com">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Contraseña</label>
-      <input class="form-input" type="password" [(ngModel)]="loginForm.password" name="password" placeholder="••••••••">
-    </div>
-    <button class="btn-primary full" (click)="login()">Iniciar sesión</button>
-    <a class="btn-outline full guest" routerLink="/">Continuar como invitado</a>
-    <div class="auth-switch">
-      ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
-    </div>
-    <div class="auth-switch admin-link">
-      <a routerLink="/admin">Panel Admin →</a>
-    </div>
+    @if (mode === 'login') {
+      <h2>Bienvenido de vuelta</h2>
+      <p class="sub">Inicia sesión en tu cuenta</p>
+
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input class="form-input" type="email" [(ngModel)]="loginForm.email" name="email" placeholder="tu@email.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <div class="password-field">
+          <input
+            class="form-input"
+            [type]="showLoginPassword ? 'text' : 'password'"
+            [(ngModel)]="loginForm.password"
+            name="password"
+            placeholder="********"
+          >
+          <button type="button" class="password-toggle" (click)="showLoginPassword = !showLoginPassword">
+            {{ showLoginPassword ? 'Ocultar' : 'Ver' }}
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-primary full" type="button" (click)="login()">Iniciar sesión</button>
+
+      <button class="text-link" type="button" (click)="showForgotPassword()">¿Olvidaste tu contraseña?</button>
+
+      <a class="btn-outline full guest" routerLink="/">Continuar como invitado</a>
+
+      <div class="auth-switch">
+        ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
+      </div>
+
+      <div class="auth-switch admin-link">
+        <a routerLink="/admin">Panel Admin →</a>
+      </div>
+    } @else {
+      <h2>Recuperar contraseña</h2>
+      <p class="sub">Solicita un token y úsalo para crear una contraseña nueva</p>
+
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input class="form-input" type="email" [(ngModel)]="recoveryForm.email" name="recoveryEmail" placeholder="tu@email.com">
+      </div>
+
+      <button class="btn-outline full" type="button" (click)="requestToken()">Solicitar token</button>
+
+      @if (tokenRequested) {
+        <div class="mail-notice">
+          Revisa tu correo. Te enviamos un token de 6 dígitos.
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Token recibido</label>
+          <input class="form-input" [(ngModel)]="recoveryForm.token" name="token" placeholder="Ej. 483921">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Nueva contraseña</label>
+          <div class="password-field">
+            <input
+              class="form-input"
+              [type]="showNewPassword ? 'text' : 'password'"
+              [(ngModel)]="recoveryForm.passwordNuevo"
+              name="passwordNuevo"
+              autocomplete="new-password"
+              placeholder="Mínimo 8 caracteres"
+            >
+            <button type="button" class="password-toggle" (click)="showNewPassword = !showNewPassword">
+              {{ showNewPassword ? 'Ocultar' : 'Ver' }}
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirmar nueva contraseña</label>
+          <div class="password-field">
+            <input
+              class="form-input"
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              [(ngModel)]="recoveryForm.confirmarPassword"
+              name="confirmarPassword"
+              autocomplete="new-password"
+              placeholder="Repite la nueva contraseña"
+            >
+            <button type="button" class="password-toggle" (click)="showConfirmPassword = !showConfirmPassword">
+              {{ showConfirmPassword ? 'Ocultar' : 'Ver' }}
+            </button>
+          </div>
+        </div>
+
+        <button class="btn-primary full" type="button" (click)="resetPassword()">Restablecer contraseña</button>
+      }
+
+      <button class="text-link" type="button" (click)="showLogin()">Volver a iniciar sesión</button>
+    }
   </div>
 </section>

@@ -37,6 +37,16 @@
   margin-bottom: 18px;
 }
 
+.security-header {
+  align-items: flex-start;
+}
+
+.security-header p {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
 .small {
   padding: 7px 12px;
   font-size: 12px;
@@ -72,6 +82,34 @@
 .empty {
   color: var(--text-muted);
   font-size: 14px;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field .form-input {
+  padding-right: 78px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: none;
+  background: var(--gray-100);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+}
+
+.password-toggle:hover {
+  background: var(--gray-200);
 }
 
 @media (max-width: 768px) {

@@ -12,35 +12,16 @@ import { ToastService } from "../../services/toast.service";
   styleUrl: "./profile.component.css",
 })
 export class ProfileComponent {
-  statusLabel(status: string): string {
-    const labels: Record<string, string> = {
-      PENDIENTE: "Pendiente",
-      PROCESANDO: "Procesando",
-      EN_CAMINO: "En camino",
-      ENTREGADO: "Entregado",
-      CANCELADO: "Cancelado",
-    };
-
-    return labels[status] ?? status;
-  }
-  
-  formatDate(value: string | null | undefined): string {
-    if (!value) {
-      return "Sin fecha";
-    }
-
-    return new Date(value).toLocaleDateString("es-PE", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  }
   readonly auth = inject(AuthService);
   readonly orders = inject(OrdersService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
   profileForm: Cliente | null = null;
+  showPasswordPanel = false;
+  showCurrentPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
 
   passwordForm = {
     passwordActual: "",
@@ -67,6 +48,14 @@ export class ProfileComponent {
       next: () => this.toast.show("Perfil actualizado"),
       error: () => this.toast.show("No se pudo actualizar el perfil"),
     });
+  }
+
+  togglePasswordPanel(): void {
+    this.showPasswordPanel = !this.showPasswordPanel;
+
+    if (!this.showPasswordPanel) {
+      this.clearPasswordForm();
+    }
   }
 
   changePassword(): void {
@@ -96,11 +85,8 @@ export class ProfileComponent {
       })
       .subscribe({
         next: () => {
-          this.passwordForm = {
-            passwordActual: "",
-            passwordNuevo: "",
-            confirmarPassword: "",
-          };
+          this.clearPasswordForm();
+          this.showPasswordPanel = false;
           this.toast.show("Contraseña actualizada");
         },
         error: () => this.toast.show("No se pudo cambiar la contraseña"),
@@ -111,5 +97,40 @@ export class ProfileComponent {
     this.auth.logout();
     this.toast.show("Sesión cerrada");
     this.router.navigateByUrl("/");
+  }
+
+  statusLabel(status: string): string {
+    const labels: Record<string, string> = {
+      PENDIENTE: "Pendiente",
+      PROCESANDO: "Procesando",
+      EN_CAMINO: "En camino",
+      ENTREGADO: "Entregado",
+      CANCELADO: "Cancelado",
+    };
+
+    return labels[status] ?? status;
+  }
+
+  formatDate(value: string | null | undefined): string {
+    if (!value) {
+      return "Sin fecha";
+    }
+
+    return new Date(value).toLocaleDateString("es-PE", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  private clearPasswordForm(): void {
+    this.passwordForm = {
+      passwordActual: "",
+      passwordNuevo: "",
+      confirmarPassword: "",
+    };
+    this.showCurrentPassword = false;
+    this.showNewPassword = false;
+    this.showConfirmPassword = false;
   }
 }

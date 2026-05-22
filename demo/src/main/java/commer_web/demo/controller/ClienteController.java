@@ -23,6 +23,7 @@ import commer_web.demo.model.Cliente;
 import commer_web.demo.model.PasswordResetToken;
 import commer_web.demo.repository.ClienteRepository;
 import commer_web.demo.repository.PasswordResetTokenRepository;
+import commer_web.demo.service.EmailService;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -31,12 +32,16 @@ public class ClienteController {
 
     private final ClienteRepository clienteRepository;
     private final PasswordResetTokenRepository resetTokenRepository;
+    private final EmailService emailService;
 
     public ClienteController(
             ClienteRepository clienteRepository,
-            PasswordResetTokenRepository resetTokenRepository) {
+            PasswordResetTokenRepository resetTokenRepository,
+            EmailService emailService
+    ) {
         this.clienteRepository = clienteRepository;
         this.resetTokenRepository = resetTokenRepository;
+        this.emailService = emailService;
     }
 
     @GetMapping
@@ -73,8 +78,11 @@ public class ClienteController {
 
     @PostMapping("/solicitar-recuperacion")
     public Map<String, String> solicitarRecuperacion(
-            @RequestBody SolicitarRecuperacionPasswordRequest request) {
-        Cliente cliente = clienteRepository.findByEmail(request.getEmail())
+            @RequestBody SolicitarRecuperacionPasswordRequest request
+    ) {
+        String email = request.getEmail().trim().toLowerCase();
+
+        Cliente cliente = clienteRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("No existe un cliente con ese correo"));
 
         String token = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
@@ -86,19 +94,22 @@ public class ClienteController {
         resetToken.setUsado(false);
         resetTokenRepository.save(resetToken);
 
-        System.out.println("Token de recuperación para " + cliente.getEmail() + ": " + token);
+        emailService.enviarTokenRecuperacion(cliente.getEmail(), token);
 
         return Map.of(
-                "mensaje", "Token generado correctamente. En la siguiente fase se enviará por correo.",
-                "token", token);
+                "mensaje", "Token enviado correctamente al correo registrado."
+        );
     }
 
     @PutMapping("/restablecer-password")
     public Cliente restablecerPassword(@RequestBody RestablecerPasswordRequest request) {
+        String email = request.getEmail().trim().toLowerCase();
+
         PasswordResetToken resetToken = resetTokenRepository
                 .findTopByEmailAndTokenAndUsadoFalseOrderByFechaCreacionDesc(
-                        request.getEmail(),
-                        request.getToken())
+                        email,
+                        request.getToken()
+                )
                 .orElseThrow(() -> new RuntimeException("Token inválido o ya usado"));
 
         if (resetToken.getFechaExpiracion().isBefore(LocalDateTime.now())) {
@@ -109,7 +120,7 @@ public class ClienteController {
             throw new RuntimeException("La nueva contraseña debe tener mínimo 8 caracteres");
         }
 
-        Cliente cliente = clienteRepository.findByEmail(request.getEmail())
+        Cliente cliente = clienteRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
         cliente.setPassword(request.getPasswordNuevo());
@@ -140,7 +151,8 @@ public class ClienteController {
     @PutMapping("/{id}/password")
     public Cliente cambiarPassword(
             @PathVariable Long id,
-            @RequestBody CambiarPasswordRequest request) {
+            @RequestBody CambiarPasswordRequest request
+    ) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 

@@ -33,6 +33,17 @@ export interface ChangePasswordRequest {
   passwordNuevo: string;
 }
 
+export interface RequestPasswordResetResponse {
+  mensaje: string;
+  token?: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  token: string;
+  passwordNuevo: string;
+}
+
 @Injectable({ providedIn: "root" })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -50,6 +61,20 @@ export class AuthService {
   register(request: RegisterRequest): Observable<Cliente> {
     return this.http.post<Cliente>(this.apiUrl, request).pipe(
       tap((client) => this.setClient(client)),
+    );
+  }
+
+  requestPasswordReset(email: string): Observable<RequestPasswordResetResponse> {
+    return this.http.post<RequestPasswordResetResponse>(
+      `${this.apiUrl}/solicitar-recuperacion`,
+      { email },
+    );
+  }
+
+  resetPassword(request: ResetPasswordRequest): Observable<Cliente> {
+    return this.http.put<Cliente>(
+      `${this.apiUrl}/restablecer-password`,
+      request,
     );
   }
 
